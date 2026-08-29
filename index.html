@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PEMods — We'll be back soon</title>
+<meta name="description" content="PEMods is getting a new shop. We'll be back soon.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23000'/%3E%3Ctext x='16' y='21' font-family='Inter,Arial,sans-serif' font-size='14' font-weight='700' fill='%23fff' text-anchor='middle'%3EPE%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #fff; color: #000;
+    display: flex; flex-direction: column; min-height: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+  header { padding: 28px 24px; text-align: center; border-bottom: 1px solid #eee; }
+  .logo { font-weight: 700; font-size: 22px; letter-spacing: .18em; text-transform: uppercase; }
+  main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 24px; }
+  .card { max-width: 560px; text-align: center; }
+  .badge {
+    display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+    border: 1px solid #000; border-radius: 999px; padding: 6px 14px; margin-bottom: 28px;
+  }
+  h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.1; margin: 0 0 18px; font-weight: 700; letter-spacing: -.01em; }
+  p { font-size: 17px; line-height: 1.6; color: #333; margin: 0 0 14px; }
+  .sub { font-size: 15px; color: #666; }
+  footer { padding: 22px 24px; text-align: center; font-size: 13px; color: #777; border-top: 1px solid #eee; }
+</style>
+</head>
+<body>
+  <header><div class="logo">PEMods</div></header>
+  <main>
+    <div class="card">
+      <span class="badge">Temporarily offline</span>
+      <h1>We'll be back soon.</h1>
+      <p>Our shop is currently getting a fresh new home. Orders are paused while we move.</p>
+      <p class="sub">Thanks for your patience — check back shortly.</p>
+    </div>
+  </main>
+  <footer>&copy; <span id="y"></span> PEMods</footer>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>
