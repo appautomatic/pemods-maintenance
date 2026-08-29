@@ -4,47 +4,126 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PEMods — We'll be back soon</title>
-<meta name="description" content="PEMods is getting a new shop. We'll be back soon.">
+<meta name="description" content="PEMods is moving to a new home. Modular pumping mods, precision printed. We'll be back soon.">
 <meta name="robots" content="noindex">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23000'/%3E%3Ctext x='16' y='21' font-family='Inter,Arial,sans-serif' font-size='14' font-weight='700' fill='%23fff' text-anchor='middle'%3EPE%3C/text%3E%3C/svg%3E">
+<meta property="og:title" content="PEMods — We'll be back soon">
+<meta property="og:description" content="Modular pumping mods, precision printed. Our shop is moving to a new home.">
+<meta property="og:image" content="https://pemods.com/assets/puck.jpg">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root { color-scheme: light; }
+  :root { color-scheme: light; --text:#1a1a1a; --muted:#666; --line:#e6e6e6; --radius:.5rem; }
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; }
   body {
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    background: #fff; color: #000;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #fff; color: var(--text);
     display: flex; flex-direction: column; min-height: 100%;
     -webkit-font-smoothing: antialiased;
   }
-  header { padding: 28px 24px; text-align: center; border-bottom: 1px solid #eee; }
-  .logo { font-weight: 700; font-size: 22px; letter-spacing: .18em; text-transform: uppercase; }
-  main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 24px; }
-  .card { max-width: 560px; text-align: center; }
-  .badge {
-    display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
-    border: 1px solid #000; border-radius: 999px; padding: 6px 14px; margin-bottom: 28px;
+  a { color: inherit; }
+
+  .announcement {
+    background: #000; color: #fff; text-align: center;
+    font-size: 13px; font-weight: 500; letter-spacing: .02em; padding: 10px 16px;
   }
-  h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.1; margin: 0 0 18px; font-weight: 700; letter-spacing: -.01em; }
-  p { font-size: 17px; line-height: 1.6; color: #333; margin: 0 0 14px; }
-  .sub { font-size: 15px; color: #666; }
-  footer { padding: 22px 24px; text-align: center; font-size: 13px; color: #777; border-top: 1px solid #eee; }
+  header { padding: 22px 24px 18px; text-align: center; border-bottom: 1px solid var(--line); }
+  header img { height: 56px; width: auto; display: inline-block; }
+  nav { margin-top: 14px; font-size: 14px; color: var(--muted); }
+  nav a { text-decoration: none; margin: 0 12px; }
+  nav a:hover { color: var(--text); text-decoration: underline; }
+
+  main { flex: 1; }
+  .hero {
+    max-width: 1100px; margin: 0 auto; padding: 56px 24px;
+    display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center;
+  }
+  .badge {
+    display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+    border: 1px solid #000; border-radius: 999px; padding: 6px 14px; margin-bottom: 26px;
+  }
+  h1 { font-size: clamp(34px, 5vw, 52px); line-height: 1.05; margin: 0 0 20px; font-weight: 700; letter-spacing: -.02em; }
+  .lead { font-size: 18px; line-height: 1.6; color: #333; margin: 0 0 14px; max-width: 520px; }
+  .sub { font-size: 15px; line-height: 1.6; color: var(--muted); margin: 0 0 30px; max-width: 520px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-block; padding: 14px 24px; border-radius: var(--radius); font-weight: 600; font-size: 15px;
+    text-decoration: none; border: 1px solid #000; transition: background .15s, color .15s;
+  }
+  .btn-primary { background: #000; color: #fff; }
+  .btn-primary:hover { background: #333; border-color: #333; }
+  .btn-ghost { background: #fff; color: #000; }
+  .btn-ghost:hover { background: #f4f4f4; }
+
+  .media { position: relative; }
+  .media img {
+    width: 100%; max-height: 560px; object-fit: contain; display: block;
+    background: #f4f4f4; border-radius: var(--radius);
+  }
+  .media figcaption { margin-top: 10px; font-size: 13px; color: var(--muted); text-align: center; }
+
+  .note {
+    max-width: 1100px; margin: 0 auto; padding: 0 24px 56px;
+  }
+  .note-box {
+    border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px;
+    background: #faf8f3; font-size: 14px; line-height: 1.6; color: #333;
+  }
+  .note-box strong { color: #000; }
+
+  footer { padding: 24px; text-align: center; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+  footer a { text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 800px) {
+    .hero { grid-template-columns: 1fr; gap: 32px; padding: 40px 20px; text-align: center; }
+    .lead, .sub { margin-left: auto; margin-right: auto; }
+    .actions { justify-content: center; }
+    .media img { max-height: 420px; }
+    header img { height: 46px; }
+  }
 </style>
 </head>
 <body>
-  <header><div class="logo">PEMods</div></header>
+  <div class="announcement">We're moving to a new home — orders are paused for a short while.</div>
+
+  <header>
+    <a href="/"><img src="/assets/logo.png" alt="PEMods" width="400" height="216"></a>
+    <nav>
+      <a href="mailto:shop@pemods.com">Contact</a>
+      <a href="https://www.reddit.com/r/TheScienceOfPE/comments/1uhs09g/magnetic_displacement_pucks_now_available_fully/" target="_blank" rel="noopener">Reddit</a>
+    </nav>
+  </header>
+
   <main>
-    <div class="card">
-      <span class="badge">Temporarily offline</span>
-      <h1>We'll be back soon.</h1>
-      <p>Our shop is currently getting a fresh new home. Orders are paused while we move.</p>
-      <p class="sub">Thanks for your patience — check back shortly.</p>
-    </div>
+    <section class="hero">
+      <div>
+        <span class="badge">Temporarily offline</span>
+        <h1>We'll be back soon.</h1>
+        <p class="lead">PEMods is getting a brand-new shop. Modular pumping mods, precision printed — same products, better store.</p>
+        <p class="sub">While we move, ordering is paused. If you have a question about sizing, a custom puck or an existing order, just drop us a line.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="mailto:shop@pemods.com">Email us</a>
+          <a class="btn btn-ghost" href="https://www.reddit.com/r/TheScienceOfPE/comments/1uhs09g/magnetic_displacement_pucks_now_available_fully/" target="_blank" rel="noopener">Read the Reddit post</a>
+        </div>
+      </div>
+      <figure class="media" style="margin:0">
+        <img src="/assets/puck.jpg" alt="PEMods magnetic displacement pucks stacked inside a cylinder" width="720" height="900">
+        <figcaption>Magnetic Displacement Pucks — modular, no O-rings, easy to clean.</figcaption>
+      </figure>
+    </section>
+
+    <section class="note">
+      <div class="note-box">
+        <strong>Already ordered?</strong> Your order isn't affected by the move. If you have a question about an existing order,
+        reply to your order confirmation or write to <a href="mailto:shop@pemods.com">shop@pemods.com</a>.
+      </div>
+    </section>
   </main>
-  <footer>&copy; <span id="y"></span> PEMods</footer>
+
+  <footer>&copy; <span id="y"></span> PEMods · <a href="mailto:shop@pemods.com">shop@pemods.com</a></footer>
   <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
