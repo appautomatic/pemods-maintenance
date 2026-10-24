@@ -3,126 +3,350 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PEMods - We'll be back soon</title>
-<meta name="description" content="PEMods is moving to a new home. Modular pumping mods, precision printed. We'll be back soon.">
-<meta name="robots" content="noindex">
-<meta property="og:title" content="PEMods - We'll be back soon">
-<meta property="og:description" content="Modular pumping mods, precision printed. We're moving to a new home.">
-<meta property="og:image" content="https://pemods.com/assets/puck.jpg">
+<title>PEMods - Magnetic Air Displacement Pucks</title>
+<meta name="description" content="Modular, magnetic air displacement pucks for pumping cylinders. 3D printed in Switzerland, shipped to Europe, USA and beyond. Order by email.">
+<meta property="og:title" content="PEMods - Magnetic Air Displacement Pucks">
+<meta property="og:description" content="Modular, magnetic, no O-rings. Order by email, we ship worldwide.">
+<meta property="og:image" content="https://pemods.com/assets/sizes.jpg">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root { color-scheme: light; --text:#1a1a1a; --muted:#666; --line:#e6e6e6; --radius:.5rem; }
+  :root { color-scheme: light; --text:#1a1a1a; --muted:#666; --line:#e6e6e6; --soft:#f4f4f4; --cream:#faf8f3; --radius:.5rem; }
   * { box-sizing: border-box; }
-  html, body { height: 100%; margin: 0; }
+  html { scroll-behavior: smooth; }
   body {
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: #fff; color: var(--text);
-    display: flex; flex-direction: column; min-height: 100%;
-    -webkit-font-smoothing: antialiased;
+    margin: 0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #fff; color: var(--text); -webkit-font-smoothing: antialiased; line-height: 1.6;
   }
   a { color: inherit; }
+  img, video { display: block; max-width: 100%; }
 
-  .announcement {
-    background: #000; color: #fff; text-align: center;
-    font-size: 13px; font-weight: 500; letter-spacing: .02em; padding: 10px 16px;
-  }
+  .announcement { background: #000; color: #fff; text-align: center; font-size: 13px; font-weight: 500; letter-spacing: .02em; padding: 10px 16px; }
   header { padding: 22px 24px 18px; text-align: center; border-bottom: 1px solid var(--line); }
   header img { height: 56px; width: auto; display: inline-block; }
   nav { margin-top: 14px; font-size: 14px; color: var(--muted); }
   nav a { text-decoration: none; margin: 0 12px; }
   nav a:hover { color: var(--text); text-decoration: underline; }
 
-  main { flex: 1; }
-  .hero {
-    max-width: 1100px; margin: 0 auto; padding: 56px 24px;
-    display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center;
-  }
-  .badge {
-    display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
-    border: 1px solid #000; border-radius: 999px; padding: 6px 14px; margin-bottom: 26px;
-  }
-  h1 { font-size: clamp(34px, 5vw, 52px); line-height: 1.05; margin: 0 0 20px; font-weight: 700; letter-spacing: -.02em; }
-  .lead { font-size: 18px; line-height: 1.6; color: #333; margin: 0 0 14px; max-width: 520px; }
-  .sub { font-size: 15px; line-height: 1.6; color: var(--muted); margin: 0 0 30px; max-width: 520px; }
-  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  section.wrap { padding: 56px 24px; }
+  section + section { border-top: 1px solid var(--line); }
+  h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.08; margin: 0 0 18px; font-weight: 700; letter-spacing: -.02em; }
+  h2 { font-size: clamp(24px, 3.4vw, 32px); line-height: 1.15; margin: 0 0 18px; font-weight: 700; letter-spacing: -.01em; }
+  h3 { font-size: 16px; margin: 0 0 4px; }
+  p { margin: 0 0 14px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 14px; }
+
+  .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .lead { font-size: 18px; color: #333; max-width: 520px; }
+  .price { font-size: 22px; font-weight: 700; margin: 6px 0 4px; }
+  .price span { font-size: 15px; font-weight: 500; color: var(--muted); }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
   .btn {
-    display: inline-block; padding: 14px 24px; border-radius: var(--radius); font-weight: 600; font-size: 15px;
-    text-decoration: none; border: 1px solid #000; transition: background .15s, color .15s;
+    display: inline-block; padding: 14px 24px; border-radius: var(--radius); font: inherit; font-weight: 600; font-size: 15px;
+    text-decoration: none; border: 1px solid #000; cursor: pointer; transition: background .15s, color .15s; text-align: center;
   }
   .btn-primary { background: #000; color: #fff; }
   .btn-primary:hover { background: #333; border-color: #333; }
   .btn-ghost { background: #fff; color: #000; }
-  .btn-ghost:hover { background: #f4f4f4; }
+  .btn-ghost:hover { background: var(--soft); }
+  .btn[disabled] { background: #bbb; border-color: #bbb; cursor: not-allowed; }
 
-  .media { position: relative; }
-  .media img {
-    width: 100%; max-height: 560px; object-fit: contain; display: block;
-    background: #f4f4f4; border-radius: var(--radius);
-  }
-  .media figcaption { margin-top: 10px; font-size: 13px; color: var(--muted); text-align: center; }
+  .gallery > img { width: 100%; height: 560px; object-fit: contain; border-radius: var(--radius); background: #f2f2f2; }
+  .thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+  .thumbs button { padding: 0; border: 2px solid transparent; border-radius: var(--radius); background: var(--soft); cursor: pointer; overflow: hidden; aspect-ratio: 1; }
+  .thumbs button[aria-current="true"] { border-color: #000; }
+  .thumbs img { width: 100%; height: 100%; object-fit: cover; }
 
-  .note {
-    max-width: 1100px; margin: 0 auto; padding: 0 24px 56px;
-  }
-  .note-box {
-    border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px;
-    background: #faf8f3; font-size: 14px; line-height: 1.6; color: #333;
-  }
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 22px; margin-top: 8px; }
+  .feature { padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); }
+  .feature p { margin: 0; font-size: 15px; color: #333; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  .video { width: 100%; max-width: 320px; margin: 0 auto; border-radius: var(--radius); background: #000; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); }
+  th { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+  .note-box { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; background: var(--cream); font-size: 15px; color: #333; }
   .note-box strong { color: #000; }
 
-  footer { padding: 24px; text-align: center; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+  /* Order builder */
+  .order { display: grid; grid-template-columns: 1.2fr .8fr; gap: 40px; align-items: start; }
+  .rows { border-top: 1px solid var(--line); }
+  .row { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .row .size { font-weight: 600; }
+  .row .size small { display: block; font-weight: 400; color: var(--muted); font-size: 13px; }
+  .stepper { display: flex; align-items: center; border: 1px solid #ccc; border-radius: var(--radius); overflow: hidden; }
+  .stepper .lbl { font-size: 12px; color: var(--muted); padding: 0 8px; min-width: 46px; text-align: center; }
+  .stepper button { width: 36px; height: 38px; border: 0; background: #fff; font-size: 18px; cursor: pointer; color: #000; }
+  .stepper button:hover { background: var(--soft); }
+  .stepper output { width: 26px; text-align: center; font-weight: 600; }
+  .row.custom { grid-template-columns: 1fr; }
+  .row.custom .line { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; }
+  label.field { display: block; font-size: 14px; font-weight: 600; margin: 16px 0 6px; }
+  input[type=text], textarea {
+    width: 100%; font: inherit; font-size: 15px; padding: 11px 12px; border: 1px solid #ccc; border-radius: var(--radius); background: #fff; color: var(--text);
+  }
+  textarea { min-height: 76px; resize: vertical; }
+  .summary { position: sticky; top: 20px; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; background: #fff; }
+  .summary dl { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 0 0 14px; font-size: 15px; }
+  .summary dd { margin: 0; text-align: right; font-weight: 600; }
+  .summary .total { font-size: 20px; font-weight: 700; border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px; }
+  .summary .btn { width: 100%; margin-top: 10px; }
+  .warn { color: #a3470f; font-size: 14px; min-height: 1.4em; margin: 8px 0 0; }
+  .steps { margin: 18px 0 0; padding-left: 20px; font-size: 14px; color: #333; }
+  .steps li { margin-bottom: 6px; }
+
+  footer { padding: 28px 24px; text-align: center; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
   footer a { text-decoration: none; }
   footer a:hover { text-decoration: underline; }
 
-  @media (max-width: 800px) {
-    .hero { grid-template-columns: 1fr; gap: 32px; padding: 40px 20px; text-align: center; }
-    .lead, .sub { margin-left: auto; margin-right: auto; }
-    .actions { justify-content: center; }
-    .media img { max-height: 420px; }
+  @media (max-width: 860px) {
+    section.wrap { padding: 40px 24px; }
+    .hero, .two, .order { grid-template-columns: 1fr; gap: 30px; }
+    .hero .gallery { order: 2; }
+    .gallery > img { height: 380px; }
     header img { height: 46px; }
+    .summary { position: static; }
+  }
+  @media (max-width: 420px) {
+    section.wrap { padding-left: 16px; padding-right: 16px; }
+    .row { grid-template-columns: 1fr 1fr; }
+    .row .size { grid-column: 1 / -1; }
+    .row.custom .line { grid-template-columns: 1fr 1fr; }
+    .row.custom .line input { grid-column: 1 / -1; }
+    .stepper { justify-content: space-between; }
   }
 </style>
 </head>
 <body>
-  <div class="announcement">We're moving to a new home. Back soon.</div>
+  <div class="announcement">Now taking orders by email. Shipping to Europe, USA and beyond.</div>
 
   <header>
     <a href="/"><img src="/assets/logo.png" alt="PEMods" width="400" height="216"></a>
     <nav>
+      <a href="#order">Order</a>
+      <a href="#sizing">Sizing</a>
       <a href="mailto:pemods@proton.me">Contact</a>
       <a href="https://www.reddit.com/r/TheScienceOfPE/comments/1uhs09g/magnetic_displacement_pucks_now_available_fully/" target="_blank" rel="noopener">Reddit</a>
     </nav>
   </header>
 
   <main>
-    <section class="hero">
-      <div>
-        <span class="badge">Temporarily offline</span>
-        <h1>We'll be back soon.</h1>
-        <p class="lead">PEMods is getting a brand-new shop. Modular pumping mods, precision printed. Same products, better store.</p>
-        <p class="sub">If you have a question about sizing, a custom puck or an order, just drop us a line.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="mailto:pemods@proton.me">Email us</a>
-          <a class="btn btn-ghost" href="https://www.reddit.com/r/TheScienceOfPE/comments/1uhs09g/magnetic_displacement_pucks_now_available_fully/" target="_blank" rel="noopener">Read the Reddit post</a>
+    <section class="wrap">
+      <div class="hero">
+        <div class="gallery">
+          <img id="main-img" src="/assets/stack.jpg" alt="A stack of PEMods pucks inside a cylinder" width="900" height="1125">
+          <div class="thumbs">
+            <button type="button" aria-current="true" data-src="/assets/stack.jpg" data-alt="A stack of PEMods pucks inside a cylinder"><img src="/assets/stack.jpg" alt="" loading="lazy"></button>
+            <button type="button" data-src="/assets/sizes.jpg" data-alt="Pucks in all six sizes"><img src="/assets/sizes.jpg" alt="" loading="lazy"></button>
+            <button type="button" data-src="/assets/heights.jpg" data-alt="10 mm and 25 mm puck"><img src="/assets/heights.jpg" alt="" loading="lazy"></button>
+          </div>
+        </div>
+        <div>
+          <h1>Magnetic Air Displacement Puck</h1>
+          <p class="lead">Fills the unused air space in your cylinder. Less air to move means faster pressure changes, which you notice most with Milking and RIP and with larger cylinders.</p>
+          <p class="price">&euro;11.90 <span>per puck</span></p>
+          <p class="muted small">&euro;9.90 per puck from 6 pucks. Minimum order 3 pucks. Shipping is added to your quote.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="#order">Build your order</a>
+            <a class="btn btn-ghost" href="#sizing">Find your size</a>
+          </div>
         </div>
       </div>
-      <figure class="media" style="margin:0">
-        <img src="/assets/puck.jpg" alt="PEMods magnetic displacement pucks stacked inside a cylinder" width="720" height="900">
-        <figcaption>Magnetic Displacement Pucks: modular, no O-rings, easy to clean.</figcaption>
-      </figure>
     </section>
 
-    <section class="note">
-      <div class="note-box">
-        <strong>Questions?</strong> Write to <a href="mailto:pemods@proton.me">pemods@proton.me</a> and we'll get back to you.
+    <section class="wrap">
+      <h2>Why this one is different</h2>
+      <p class="muted">Inspired by Karl's <a href="https://www.reddit.com/r/TheScienceOfPE/comments/1maiurv/i_made_a_thing_karls_displacement_puck_making/" target="_blank" rel="noopener">original displacement puck concept</a>, the PEMods Puck takes the idea further with a fully modular, magnetic system.</p>
+      <div class="features">
+        <div class="feature"><h3>Magnetic, no O-rings</h3><p>Embedded neodymium magnets hold the stack together. A central air channel keeps air flowing, nothing seals.</p></div>
+        <div class="feature"><h3>Foolproof stacking</h3><p>The magnet layout only lets the pucks stack the right way. No special top piece needed.</p></div>
+        <div class="feature"><h3>Easy to remove</h3><p>Two magnets on top of the cylinder hold the stack. Take them off and the stack drops right out. No rod, no hook.</p></div>
+        <div class="feature"><h3>Easy to clean</h3><p>Nothing traps fluid or wears out. Pull the stack apart, rinse, done.</p></div>
+        <div class="feature"><h3>Labeled</h3><p>Black PLA with the size printed in white, so you always know what you've got.</p></div>
       </div>
+    </section>
+
+    <section class="wrap">
+      <div class="two">
+        <div>
+          <h2>How many pucks do I need?</h2>
+          <p>Measure the empty space above your glans at working length. That's the dead volume you want to fill.</p>
+          <p>Stack pucks to take up most of it, but leave around 1 cm (0.4") at the top so you're not pressing against the stack.</p>
+          <p>Combine 25 mm and 10 mm pucks to fine-tune the height, and include at least one 10 mm puck so you can adjust in small steps.</p>
+          <p class="muted small">See our <a href="https://www.reddit.com/r/TheScienceOfPE/comments/1uhs09g/magnetic_displacement_pucks_now_available_fully/" target="_blank" rel="noopener">Reddit post</a> for a sizing walkthrough.</p>
+        </div>
+        <video class="video" src="/assets/puck-video.mp4" poster="/assets/video-poster.jpg" controls muted playsinline preload="none" width="540" height="960"></video>
+      </div>
+    </section>
+
+    <section class="wrap" id="sizing">
+      <h2>Compatibility &amp; sizing</h2>
+      <p class="muted"><strong>Please measure your cylinder's inner diameter before ordering.</strong></p>
+      <table>
+        <thead><tr><th>Cylinder</th><th>Inner diameter</th><th>Puck diameter</th></tr></thead>
+        <tbody>
+          <tr><td>2.50"</td><td>61.2 mm</td><td>60.5 mm</td></tr>
+          <tr><td>2.24"</td><td>54.9 mm</td><td>54.2 mm</td></tr>
+          <tr><td>2.125"</td><td>52.0 mm</td><td>51.3 mm</td></tr>
+          <tr><td>2.00"</td><td>49.0 mm</td><td>48.3 mm</td></tr>
+          <tr><td>1.85"</td><td>45.3 mm</td><td>44.6 mm</td></tr>
+          <tr><td>1.73"</td><td>42.4 mm</td><td>41.7 mm</td></tr>
+        </tbody>
+      </table>
+      <p class="muted small" style="margin-top:14px">Valve opening: 10.0 mm on all sizes. Every manufacturer uses different tolerances, so these are reference measurements and fit is not guaranteed. Flange design and inner shape can differ between cylinders of the same nominal size. Pucks may vary by &plusmn;0.5 mm.</p>
+      <div class="note-box"><strong>Size not listed?</strong> We make custom pucks for your cylinder. Just send us its inner diameter in the order below. Custom orders are made to your measurements and can't be returned.</div>
+    </section>
+
+    <section class="wrap" id="order">
+      <h2>Build your order</h2>
+      <p class="muted">Pick sizes and heights, then send the order by email. We reply with the total including shipping and a PayPal invoice (card payment works too). Nothing is charged until you pay that invoice.</p>
+      <div class="order">
+        <div>
+          <div class="rows" id="rows"></div>
+          <div class="row custom">
+            <div class="size">Custom size <small>Enter your cylinder's inner diameter</small></div>
+            <div class="line">
+              <input type="text" id="custom-id" placeholder="Inner diameter, e.g. 57.2 mm" autocomplete="off">
+              <div class="stepper" data-key="custom|10"><span class="lbl">10 mm</span><button type="button" data-d="-1" aria-label="Fewer">&minus;</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button></div>
+              <div class="stepper" data-key="custom|25"><span class="lbl">25 mm</span><button type="button" data-d="-1" aria-label="Fewer">&minus;</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button></div>
+            </div>
+          </div>
+          <label class="field" for="country">Ship to (country)</label>
+          <input type="text" id="country" placeholder="e.g. United States" autocomplete="country-name">
+          <label class="field" for="notes">Anything else? (optional)</label>
+          <textarea id="notes" placeholder="Questions, cylinder brand, ..."></textarea>
+        </div>
+        <aside class="summary" aria-live="polite">
+          <dl>
+            <dt>Pucks</dt><dd id="s-qty">0</dd>
+            <dt>Price per puck</dt><dd id="s-each">&euro;11.90</dd>
+            <dt class="total">Subtotal</dt><dd class="total" id="s-total">&euro;0.00</dd>
+          </dl>
+          <p class="muted small" style="margin:0">Plus shipping, quoted by email.</p>
+          <p class="warn" id="s-warn"></p>
+          <button class="btn btn-primary" id="send" type="button" disabled>Send order by email</button>
+          <button class="btn btn-ghost" id="copy" type="button" disabled>Copy order text</button>
+          <ol class="steps">
+            <li>Your email app opens with the order filled in. Add your shipping address and send.</li>
+            <li>We reply with the total and a PayPal invoice.</li>
+            <li>Once paid, your pucks are printed and shipped with tracking.</li>
+          </ol>
+          <p class="muted small">No email app? Copy the order text and send it to <a href="mailto:pemods@proton.me">pemods@proton.me</a>.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <h2>Shipping</h2>
+      <p>We ship from Switzerland to Switzerland, Europe, the USA, Canada, Australia and more. Every order ships with tracking.</p>
+      <p class="muted small">Questions about sizing, custom pucks or shipping? Write to <a href="mailto:pemods@proton.me">pemods@proton.me</a>.</p>
     </section>
   </main>
 
-  <footer>&copy; <span id="y"></span> PEMods · <a href="mailto:pemods@proton.me">pemods@proton.me</a></footer>
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+  <footer>&copy; <span id="y"></span> PEMods &middot; Made in Switzerland &middot; <a href="mailto:pemods@proton.me">pemods@proton.me</a></footer>
+
+<script>
+(() => {
+  const SIZES = [
+    ['2.50', '60.5 mm'], ['2.24', '54.2 mm'], ['2.125', '51.3 mm'],
+    ['2.00', '48.3 mm'], ['1.85', '44.6 mm'], ['1.73', '41.7 mm'],
+  ];
+  const MIN = 3, PRICE = 11.90, BULK = 9.90, BULK_FROM = 6, MAX = 30;
+  const MAIL = 'pemods@proton.me';
+  const qty = {};
+  const eur = n => '€' + n.toFixed(2);
+
+  const rows = document.getElementById('rows');
+  const stepper = key => `<div class="stepper" data-key="${key}"><span class="lbl">${key.split('|')[1]} mm</span><button type="button" data-d="-1" aria-label="Fewer">&minus;</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button></div>`;
+  rows.innerHTML = SIZES.map(([s, d]) =>
+    `<div class="row"><div class="size">${s}" cylinder<small>Puck ${d}</small></div>${stepper(s + '|10')}${stepper(s + '|25')}</div>`
+  ).join('');
+
+  document.querySelectorAll('.stepper').forEach(st => {
+    const key = st.dataset.key, out = st.querySelector('output');
+    qty[key] = 0;
+    st.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      qty[key] = Math.max(0, Math.min(MAX, qty[key] + Number(b.dataset.d)));
+      out.textContent = qty[key];
+      update();
+    });
+  });
+  ['custom-id', 'country', 'notes'].forEach(id => document.getElementById(id).addEventListener('input', update));
+
+  function lines() {
+    const out = [];
+    for (const [key, n] of Object.entries(qty)) {
+      if (!n) continue;
+      const [size, h] = key.split('|');
+      const name = size === 'custom'
+        ? `Custom (inner diameter ${document.getElementById('custom-id').value.trim() || '?'})`
+        : `${size}" cylinder`;
+      out.push(`${n} x ${name}, ${h} mm high`);
+    }
+    return out;
+  }
+
+  function state() {
+    const total = Object.values(qty).reduce((a, b) => a + b, 0);
+    const each = total >= BULK_FROM ? BULK : PRICE;
+    const customQty = qty['custom|10'] + qty['custom|25'];
+    let warn = '';
+    if (total > 0 && total < MIN) warn = `Minimum order is ${MIN} pucks.`;
+    else if (customQty && !document.getElementById('custom-id').value.trim()) warn = 'Please enter the inner diameter for your custom pucks.';
+    return { total, each, sum: total * each, ok: total >= MIN && !warn, warn };
+  }
+
+  function text() {
+    const s = state();
+    const country = document.getElementById('country').value.trim();
+    const notes = document.getElementById('notes').value.trim();
+    return [
+      'Hi PEMods,', '', "I'd like to order:", ...lines().map(l => '- ' + l), '',
+      `Pucks: ${s.total} at ${eur(s.each)} = ${eur(s.sum)} plus shipping`,
+      `Ship to: ${country || '(country)'}`, '',
+      'Shipping address:', 'Name:', 'Street:', 'ZIP and city:', 'Country:', '',
+      ...(notes ? ['Notes: ' + notes, ''] : []),
+      'Thanks!',
+    ].join('\n');
+  }
+
+  function update() {
+    const s = state();
+    document.getElementById('s-qty').textContent = s.total;
+    document.getElementById('s-each').textContent = eur(s.each);
+    document.getElementById('s-total').textContent = eur(s.sum);
+    document.getElementById('s-warn').textContent = s.warn || (s.total >= MIN && s.total < BULK_FROM ? `Add ${BULK_FROM - s.total} more for ${eur(BULK)} per puck.` : '');
+    document.getElementById('send').disabled = !s.ok;
+    document.getElementById('copy').disabled = !s.ok;
+  }
+
+  document.getElementById('send').addEventListener('click', () => {
+    const s = state();
+    location.href = `mailto:${MAIL}?subject=${encodeURIComponent(`Puck order (${s.total} pucks)`)}&body=${encodeURIComponent(text())}`;
+  });
+  document.getElementById('copy').addEventListener('click', async e => {
+    const btn = e.currentTarget;
+    try { await navigator.clipboard.writeText(text()); btn.textContent = 'Copied'; }
+    catch { prompt('Copy this text:', text()); }
+    setTimeout(() => { btn.textContent = 'Copy order text'; }, 2000);
+  });
+
+  const main = document.getElementById('main-img');
+  document.querySelectorAll('.thumbs button').forEach(b => b.addEventListener('click', () => {
+    main.src = b.dataset.src; main.alt = b.dataset.alt;
+    document.querySelectorAll('.thumbs button').forEach(x => x.setAttribute('aria-current', x === b));
+  }));
+
+  document.getElementById('y').textContent = new Date().getFullYear();
+  update();
+})();
+</script>
 </body>
 </html>
