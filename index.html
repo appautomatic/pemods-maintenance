@@ -92,6 +92,7 @@
     width: 100%; font: inherit; font-size: 15px; padding: 11px 12px; border: 1px solid #ccc; border-radius: var(--radius); background: #fff; color: var(--text);
   }
   textarea { min-height: 76px; resize: vertical; }
+  #ship-street, #ship-city, #country { margin-top: 8px; }
   .summary { position: sticky; top: 20px; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; background: #fff; }
   .summary dl { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 0 0 14px; font-size: 15px; }
   .summary dd { margin: 0; text-align: right; font-weight: 600; }
@@ -217,8 +218,11 @@
               <div class="stepper" data-key="custom|25"><span class="lbl">25 mm</span><button type="button" data-d="-1" aria-label="Fewer">&minus;</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button></div>
             </div>
           </div>
-          <label class="field" for="country">Ship to (country)</label>
-          <input type="text" id="country" placeholder="e.g. Germany" autocomplete="country-name">
+          <label class="field" for="ship-name">Shipping address</label>
+          <input type="text" id="ship-name" placeholder="Full name" autocomplete="shipping name">
+          <input type="text" id="ship-street" placeholder="Street and number" autocomplete="shipping street-address">
+          <input type="text" id="ship-city" placeholder="ZIP and city" autocomplete="shipping address-level2">
+          <input type="text" id="country" placeholder="Country, e.g. Germany" autocomplete="shipping country-name">
           <label class="field" for="notes">Anything else? (optional)</label>
           <textarea id="notes" placeholder="Questions, cylinder brand, ..."></textarea>
         </div>
@@ -228,14 +232,14 @@
             <dt>Price per puck</dt><dd id="s-each">&euro;11.90</dd>
             <dt class="total">Subtotal</dt><dd class="total" id="s-total">&euro;0.00</dd>
           </dl>
-          <p class="muted small" style="margin:0">Plus shipping, quoted by email.</p>
+          <p class="muted small" style="margin:0">Plus shipping, quoted by email. Outside Switzerland, customs may charge import VAT on delivery.</p>
           <p class="warn" id="s-warn"></p>
           <button class="btn btn-primary" id="send" type="button" disabled>Send order by email</button>
           <button class="btn btn-ghost" id="copy" type="button" disabled>Copy order text</button>
           <ol class="steps">
-            <li>Your email app opens with the order filled in. Add your shipping address and send.</li>
+            <li>Your email app opens with the order and address filled in. Check it and send.</li>
             <li>We reply with the total and a PayPal invoice.</li>
-            <li>Once paid, your pucks are printed and shipped with tracking.</li>
+            <li>Once paid, your pucks are made and shipped with tracking.</li>
           </ol>
           <p class="muted small">No email app? Copy the order text and send it to <a href="mailto:pemods@proton.me">pemods@proton.me</a>.</p>
         </aside>
@@ -279,7 +283,7 @@
       update();
     });
   });
-  ['custom-id', 'country', 'notes'].forEach(id => document.getElementById(id).addEventListener('input', update));
+  ['custom-id', 'ship-name', 'ship-street', 'ship-city', 'country', 'notes'].forEach(id => document.getElementById(id).addEventListener('input', update));
 
   function lines() {
     const out = [];
@@ -289,7 +293,7 @@
       const name = size === 'custom'
         ? `Custom (inner diameter ${document.getElementById('custom-id').value.trim() || '?'})`
         : `${size}" cylinder`;
-      out.push(`${n} x ${name}, ${h} mm high`);
+      out.push(`${n} x ${name}, ${h} mm`);
     }
     return out;
   }
@@ -306,16 +310,17 @@
 
   function text() {
     const s = state();
-    const country = document.getElementById('country').value.trim();
+    const val = id => document.getElementById(id).value.trim();
+    const country = val('country');
     const notes = document.getElementById('notes').value.trim();
     return [
-      'Hi PEMods,', '', "I'd like to order:", ...lines().map(l => '- ' + l), '',
-      `Pucks: ${s.total} at ${eur(s.each)} = ${eur(s.sum)} plus shipping`,
-      `Ship to: ${country || '(country)'}`, '',
-      'Shipping address:', 'Name:', 'Street:', 'ZIP and city:', 'Country:', '',
-      ...(notes ? ['Notes: ' + notes, ''] : []),
+      'Hi PEMods,', '',
+      'MY ORDER', ...lines(), '',
+      `${s.total} pucks x ${eur(s.each)} = ${eur(s.sum)} (plus shipping)`, '',
+      'SHIP TO', `Name: ${val('ship-name')}`, `Street: ${val('ship-street')}`, `ZIP and city: ${val('ship-city')}`, `Country: ${country}`, '',
+      ...(notes ? ['NOTES', notes, ''] : []),
       'Thanks!',
-    ].join('\n');
+    ].join('\r\n');
   }
 
   function update() {
