@@ -231,9 +231,8 @@
             <dt>Pucks</dt><dd id="s-qty">0</dd>
             <dt>Price per puck</dt><dd id="s-each">&euro;11.90</dd>
             <dt class="total">Subtotal</dt><dd class="total" id="s-total">&euro;0.00</dd>
-            <dt id="s-de-l" hidden>Import VAT &amp; customs, Germany (approx.)</dt><dd id="s-de" hidden></dd>
           </dl>
-          <p class="muted small" style="margin:0" id="s-note">Plus shipping, quoted by email. Outside Switzerland, customs may charge import VAT and fees on delivery.</p>
+          <p class="muted small" style="margin:0">Plus shipping, quoted by email. Outside Switzerland, customs may charge import VAT on delivery.</p>
           <p class="warn" id="s-warn"></p>
           <button class="btn btn-primary" id="send" type="button" disabled>Send order by email</button>
           <button class="btn btn-ghost" id="copy" type="button" disabled>Copy order text</button>
@@ -250,8 +249,7 @@
     <section class="wrap">
       <h2>Shipping</h2>
       <p>We ship from Switzerland to Switzerland, Europe, Canada and Australia. Other countries on request. Every order ships with tracking.</p>
-      <div class="note-box"><strong>Germany:</strong> since November 2026, EU rules require us to pay German import VAT and customs in advance. They are not included in our prices and are added to your invoice as a separate line, usually about 20% of the order plus around &euro;10. In return there is nothing to pay on delivery.</div>
-      <p style="margin-top:14px">Other countries outside Switzerland: your local customs may charge import VAT and a handling fee on delivery. In the EU this applies to every order, whatever the value. These are paid by the recipient and are not part of our price.</p>
+      <p>Outside Switzerland, your local customs may charge import VAT and a small handling fee on delivery. In the EU this applies to every order, whatever the value. These are paid by the recipient and are not part of our price.</p>
       <p class="muted small">Questions about sizing, custom pucks or shipping? Write to <a href="mailto:pemods@proton.me">pemods@proton.me</a>.</p>
     </section>
   </main>
@@ -268,14 +266,6 @@
   const MAIL = 'pemods@proton.me';
   const qty = {};
   const eur = n => '€' + n.toFixed(2);
-  // Germany: import VAT 19% + EU duty and handling fee, prepaid by us (Swiss Post PDDP). Estimate with EU shipping.
-  const SHIP_EU = 9.90, CHF_PER_EUR = 0.93;
-  const isGermany = c => /^(de|deu|germany|deutschland|allemagne|germania|alemania)$/i.test(c.trim().replace(/\.$/, ''));
-  const deDuties = goods => {
-    const duty = 3, fee = 2, vat = 0.19 * (goods + SHIP_EU + duty);
-    const pddp = 4 / CHF_PER_EUR + 0.02 * (duty + fee + vat);
-    return Math.ceil((duty + fee + vat + pddp) * 2) / 2;
-  };
 
   const rows = document.getElementById('rows');
   const stepper = key => `<div class="stepper" data-key="${key}"><span class="lbl">${key.split('|')[1]} mm</span><button type="button" data-d="-1" aria-label="Fewer">&minus;</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button></div>`;
@@ -326,8 +316,7 @@
     return [
       'Hi PEMods,', '',
       'MY ORDER', ...lines(), '',
-      `${s.total} pucks x ${eur(s.each)} = ${eur(s.sum)} (plus shipping)`,
-      ...(isGermany(country) ? [`Germany: import VAT and customs, prepaid by you and added to the invoice (approx. ${eur(deDuties(s.sum))})`] : []), '',
+      `${s.total} pucks x ${eur(s.each)} = ${eur(s.sum)} (plus shipping)`, '',
       'SHIP TO', `Name: ${val('ship-name')}`, `Street: ${val('ship-street')}`, `ZIP and city: ${val('ship-city')}`, `Country: ${country}`, '',
       ...(notes ? ['NOTES', notes, ''] : []),
       'Thanks!',
@@ -339,13 +328,6 @@
     document.getElementById('s-qty').textContent = s.total;
     document.getElementById('s-each').textContent = eur(s.each);
     document.getElementById('s-total').textContent = eur(s.sum);
-    const de = isGermany(document.getElementById('country').value) && s.total > 0;
-    document.getElementById('s-de-l').hidden = !de;
-    document.getElementById('s-de').hidden = !de;
-    document.getElementById('s-de').textContent = de ? '+ ' + eur(deDuties(s.sum)) : '';
-    document.getElementById('s-note').textContent = de
-      ? 'Plus shipping, quoted by email. For Germany we prepay import VAT and customs and add them to your invoice, so there is nothing to pay on delivery.'
-      : 'Plus shipping, quoted by email. Germany: import VAT and customs are added to your invoice. Other countries outside Switzerland: customs may charge import VAT and fees on delivery.';
     document.getElementById('s-warn').textContent = s.warn || (s.total >= MIN && s.total < BULK_FROM ? `Add ${BULK_FROM - s.total} more for ${eur(BULK)} per puck.` : '');
     document.getElementById('send').disabled = !s.ok;
     document.getElementById('copy').disabled = !s.ok;
