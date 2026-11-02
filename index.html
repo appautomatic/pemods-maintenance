@@ -88,7 +88,7 @@
   .row.custom { grid-template-columns: 1fr; }
   .row.custom .line { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; }
   label.field { display: block; font-size: 14px; font-weight: 600; margin: 16px 0 6px; }
-  input[type=text], textarea {
+  input[type=text], textarea, select {
     width: 100%; font: inherit; font-size: 15px; padding: 11px 12px; border: 1px solid #ccc; border-radius: var(--radius); background: #fff; color: var(--text);
   }
   textarea { min-height: 76px; resize: vertical; }
@@ -151,8 +151,8 @@
         <div>
           <h1>Magnetic Air Displacement Puck</h1>
           <p class="lead">Fills the unused air space in your cylinder. Less air to move means faster pressure changes, which you notice most with Milking and RIP and with larger cylinders.</p>
-          <p class="price">&euro;11.90 <span>per puck</span></p>
-          <p class="muted small">&euro;9.90 per puck from 6 pucks. Minimum order 3 pucks. Shipping is added to your quote.</p>
+          <p class="price">&euro;9.90 <span>per puck</span></p>
+          <p class="muted small">&euro;8.90 per puck from 6 pucks. Minimum order 3 pucks. Shipping is calculated by weight in the order form.</p>
           <div class="actions">
             <a class="btn btn-primary" href="#order">Build your order</a>
             <a class="btn btn-ghost" href="#sizing">Find your size</a>
@@ -222,17 +222,19 @@
           <input type="text" id="ship-name" placeholder="Full name" autocomplete="shipping name">
           <input type="text" id="ship-street" placeholder="Street and number" autocomplete="shipping street-address">
           <input type="text" id="ship-city" placeholder="ZIP and city" autocomplete="shipping address-level2">
-          <input type="text" id="country" placeholder="Country, e.g. Germany" autocomplete="shipping country-name">
+          <select id="country" autocomplete="shipping country-name"><option value="">Country</option></select>
           <label class="field" for="notes">Anything else? (optional)</label>
           <textarea id="notes" placeholder="Questions, cylinder brand, ..."></textarea>
         </div>
         <aside class="summary" aria-live="polite">
           <dl>
             <dt>Pucks</dt><dd id="s-qty">0</dd>
-            <dt>Price per puck</dt><dd id="s-each">&euro;11.90</dd>
-            <dt class="total">Subtotal</dt><dd class="total" id="s-total">&euro;0.00</dd>
+            <dt>Price per puck</dt><dd id="s-each">&euro;9.90</dd>
+            <dt>Pucks subtotal</dt><dd id="s-sub">&euro;0.00</dd>
+            <dt>Shipping with tracking</dt><dd id="s-ship">choose country</dd>
+            <dt class="total">Total</dt><dd class="total" id="s-total">&euro;0.00</dd>
           </dl>
-          <p class="muted small" style="margin:0">Plus shipping, quoted by email. Outside Switzerland, customs may charge import VAT on delivery.</p>
+          <p class="muted small" style="margin:0" id="s-note">Outside Switzerland, customs may charge import VAT on delivery.</p>
           <p class="warn" id="s-warn"></p>
           <button class="btn btn-primary" id="send" type="button" disabled>Send order by email</button>
           <button class="btn btn-ghost" id="copy" type="button" disabled>Copy order text</button>
@@ -262,10 +264,30 @@
     ['2.50', '60.5 mm'], ['2.24', '54.2 mm'], ['2.125', '51.3 mm'],
     ['2.00', '48.3 mm'], ['1.85', '44.6 mm'], ['1.73', '41.7 mm'],
   ];
-  const MIN = 3, PRICE = 11.90, BULK = 9.90, BULK_FROM = 6, MAX = 30;
+  const MIN = 3, PRICE = 9.90, BULK = 8.90, BULK_FROM = 6, MAX = 30;
+  // Shipping by weight: Swiss Post small goods international (CHF), price to customer in EUR rounded up to .90
+  const GRAMS = { 10: 55, 25: 55 }, PACKAGING = 35;
+  const TIERS = [100, 250, 500, 1000, 1500, 2000];
+  const RATES = { 1: [4.50, 9.50, 14.50, 20.50, 25.50, 30.50], 2: [7.50, 12.50, 17.50, 27.50, 32.50, 37.50] };
+  const SHIP_CH = 7.50;
+  const ZONE1 = ['Albania', 'Andorra', 'Austria', 'Belgium', 'Bosnia and Herzegovina', 'Bulgaria', 'Croatia', 'Cyprus', 'Czech Republic',
+    'Denmark', 'Estonia', 'Faroe Islands', 'Finland', 'France', 'Germany', 'Gibraltar', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Italy',
+    'Kosovo', 'Latvia', 'Lithuania', 'Luxembourg', 'Malta', 'Moldova', 'Monaco', 'Montenegro', 'Netherlands', 'North Macedonia', 'Norway',
+    'Poland', 'Portugal', 'Romania', 'San Marino', 'Serbia', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Turkey', 'Ukraine', 'United Kingdom'];
+  const ZONE2 = ['Australia', 'Canada'];
+  const OTHER = 'Other country (shipping quoted by email)';
+  const zoneOf = c => c === 'Switzerland' || c === 'Liechtenstein' ? 0 : ZONE1.includes(c) ? 1 : ZONE2.includes(c) ? 2 : null;
+  const toEur = chf => Math.ceil(chf + 0.4) - 0.10;
   const MAIL = 'pemods@proton.me';
   const qty = {};
   const eur = n => '€' + n.toFixed(2);
+
+  const sel = document.getElementById('country');
+  const opt = (v, t) => { const o = document.createElement('option'); o.value = v; o.textContent = t || v; return o; };
+  const grp = (label, list) => { const g = document.createElement('optgroup'); g.label = label; list.forEach(c => g.appendChild(opt(c))); sel.appendChild(g); };
+  grp('Switzerland', ['Switzerland', 'Liechtenstein']); grp('Europe', ZONE1); grp('Overseas', ZONE2);
+  sel.appendChild(opt(OTHER));
+  sel.addEventListener('change', update);
 
   const rows = document.getElementById('rows');
   const stepper = key => `<div class="stepper" data-key="${key}"><span class="lbl">${key.split('|')[1]} mm</span><button type="button" data-d="-1" aria-label="Fewer">&minus;</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button></div>`;
@@ -305,18 +327,31 @@
     let warn = '';
     if (total > 0 && total < MIN) warn = `Minimum order is ${MIN} pucks.`;
     else if (customQty && !document.getElementById('custom-id').value.trim()) warn = 'Please enter the inner diameter for your custom pucks.';
-    return { total, each, sum: total * each, ok: total >= MIN && !warn, warn };
+    let grams = PACKAGING, heaviest = 0;
+    for (const [key, n] of Object.entries(qty)) { const g = GRAMS[key.split('|')[1]]; grams += n * g; if (n) heaviest = Math.max(heaviest, g); }
+    const zone = zoneOf(sel.value);
+    let ship = null, room = 0;
+    if (zone === 0) ship = SHIP_CH;
+    else if (zone) {
+      const i = TIERS.findIndex(t => grams <= t);
+      if (i >= 0) { ship = toEur(RATES[zone][i]); room = Math.floor((TIERS[i] - grams) / (heaviest || GRAMS[10])); }
+    }
+    if (!warn && total >= MIN && !sel.value) warn = 'Please choose your country.';
+    const sum = total * each;
+    return { total, each, sum, ship, room, zone, grand: sum + (ship || 0), ok: total >= MIN && !warn, warn };
   }
 
   function text() {
     const s = state();
     const val = id => document.getElementById(id).value.trim();
-    const country = val('country');
+    const country = sel.value;
     const notes = document.getElementById('notes').value.trim();
     return [
       'Hi PEMods,', '',
       'MY ORDER', ...lines(), '',
-      `${s.total} pucks x ${eur(s.each)} = ${eur(s.sum)} (plus shipping)`, '',
+      `${s.total} pucks x ${eur(s.each)} = ${eur(s.sum)}`,
+      s.ship !== null ? `Shipping with tracking: ${eur(s.ship)}` : 'Shipping: please quote',
+      `Total: ${s.ship !== null ? eur(s.grand) : eur(s.sum) + ' plus shipping'}`, '',
       'SHIP TO', `Name: ${val('ship-name')}`, `Street: ${val('ship-street')}`, `ZIP and city: ${val('ship-city')}`, `Country: ${country}`, '',
       ...(notes ? ['NOTES', notes, ''] : []),
       'Thanks!',
@@ -327,8 +362,14 @@
     const s = state();
     document.getElementById('s-qty').textContent = s.total;
     document.getElementById('s-each').textContent = eur(s.each);
-    document.getElementById('s-total').textContent = eur(s.sum);
-    document.getElementById('s-warn').textContent = s.warn || (s.total >= MIN && s.total < BULK_FROM ? `Add ${BULK_FROM - s.total} more for ${eur(BULK)} per puck.` : '');
+    document.getElementById('s-sub').textContent = eur(s.sum);
+    document.getElementById('s-ship').textContent = !sel.value ? 'choose country' : s.ship !== null ? eur(s.ship) : 'quoted by email';
+    document.getElementById('s-total').textContent = s.ship !== null ? eur(s.grand) : eur(s.sum);
+    document.getElementById('s-note').textContent = s.zone === 0 ? 'Shipped within Switzerland, no customs.' : 'Outside Switzerland, customs may charge import VAT on delivery.';
+    let hint = '';
+    if (s.total >= MIN && s.total < BULK_FROM) hint = `Add ${BULK_FROM - s.total} more for ${eur(BULK)} per puck.`;
+    else if (s.total >= MIN && s.ship !== null && s.zone && s.room > 0) hint = `You can add ${s.room} more ${s.room === 1 ? 'puck' : 'pucks'} for the same shipping.`;
+    document.getElementById('s-warn').textContent = s.warn || hint;
     document.getElementById('send').disabled = !s.ok;
     document.getElementById('copy').disabled = !s.ok;
   }
