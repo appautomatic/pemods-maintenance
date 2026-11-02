@@ -133,6 +133,11 @@
   footer a { text-decoration:none; } footer a:hover { text-decoration:underline; }
 
   .sticky { display:none; }
+  /* desktop: picture and thumbnails fit on the screen, the buy box gets a bit more room */
+  @media (min-width: 901px) {
+    .product { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+    .slide { max-height:calc(100vh - 210px); min-height:420px; }
+  }
   @media (max-width: 900px) {
     .wrap { padding:0 16px; }
     header { position:static; }
@@ -253,7 +258,8 @@
   <div>
     <h2>What a displacement puck does</h2>
     <p class="lead">It fills the dead air above your glans. The less empty volume in the cylinder, the less air the pump has to move, so you reach your target vacuum faster.</p>
-    <p class="lead">You feel it most with Milking and RIP, with a manual pump or a slower electric one, and in larger cylinders with a lot of dead space. <a href="https://www.reddit.com/r/TheScienceOfPE/comments/1maiurv/i_made_a_thing_karls_displacement_puck_making/" target="_blank" rel="noopener">Karl's original concept</a> reported 50 to 60% shorter transition times.</p>
+    <p class="lead">You feel it most with Milking and RIP, with a manual pump or a slower electric one, and in larger cylinders with a lot of dead space. Karl's original concept reported 50 to 60% shorter transition times.</p>
+    <p class="lead">More photos, details and discussion in the <a href="https://www.reddit.com/r/TheScienceOfPE/comments/1uhs09g/magnetic_displacement_pucks_now_available_fully/" target="_blank" rel="noopener">PEMods post on Reddit</a>.</p>
   </div>
   <div class="why">
     <div><h3>Magnetic, no O-rings</h3><p>Embedded magnets hold the stack together. A central air channel keeps air flowing, nothing seals.</p></div>
