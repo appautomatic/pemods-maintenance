@@ -15,6 +15,16 @@
 <script>
   // Light is the default; the moon button switches to dark and the choice is remembered.
   try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
+  // German for visitors in Germany, Austria, Switzerland and Liechtenstein (by time zone; French or Italian Swiss browsers stay English),
+  // English everywhere else. The DE/EN button overrides it and the choice is remembered.
+  var LANG = (/[?&]lang=(de|en)\b/.exec(location.search) || [])[1] || '';
+  try { if (LANG) localStorage.setItem('lang', LANG); else LANG = localStorage.getItem('lang') || ''; } catch (e) {}
+  if (LANG !== 'de' && LANG !== 'en') {
+    var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+    var bl = (navigator.language || '').slice(0, 2).toLowerCase();
+    LANG = /^Europe\/(Berlin|Busingen|Vienna|Zurich|Vaduz)$/.test(tz) && bl !== 'fr' && bl !== 'it' ? 'de' : 'en';
+  }
+  document.documentElement.lang = LANG;
 </script>
 <style>
   :root { --ink:#111; --muted:#6d6d6d; --line:#e4e4e4; --bg:#fff; --soft:#f4f4f2; --field:#fff; --fieldline:#cfcfcf;
@@ -36,6 +46,7 @@
   [data-theme="dark"] header img { filter:invert(1) brightness(1.6); mix-blend-mode:screen; }
   nav { display:flex; gap:26px; align-items:center; font-size:15px; }
   nav a { text-decoration:none; color:var(--muted); } nav a:hover { color:var(--ink); }
+  .lang { background:none; border:1px solid var(--line); border-radius:999px; height:38px; padding:0 12px; font:600 13px Archivo, sans-serif; letter-spacing:.04em; cursor:pointer; color:var(--ink); margin-left:-6px; }
   .theme { background:none; border:1px solid var(--line); border-radius:999px; width:38px; height:38px; display:grid; place-items:center; cursor:pointer; color:var(--ink); margin-left:-6px; }
 
   /* product: gallery left, buy box right */
@@ -138,7 +149,7 @@
     header { position:static; }
     nav { gap:16px; }
     nav a:not([href="#buy"]) { display:none; }
-    .theme { margin-left:0; }
+    .theme, .lang { margin-left:0; }
     .product { grid-template-columns:1fr; gap:22px; padding-top:0; }
     .product > .gallery { margin:0 -16px; position:static; }
     .track, [data-theme="dark"] .track { border-radius:0; }
@@ -154,12 +165,13 @@
 </style>
 </head>
 <body>
-<div class="bar">Pay by PayPal or card · Tracked shipping · Made to order in Switzerland</div>
+<div class="bar" data-t="bar">Pay by PayPal or card · Tracked shipping · Made to order in Switzerland</div>
 <header><div class="wrap">
   <a href="/"><img src="/assets/logo.png" alt="PEMods" width="400" height="216"></a>
   <nav>
-    <a href="#about">About</a><a href="#sizes">Sizes</a><a href="#faq">FAQ</a><a href="#buy">Order</a>
-    <button class="theme" id="theme" type="button" aria-label="Switch between light and dark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+    <a href="#about" data-t="nav1">About</a><a href="#sizes" data-t="nav2">Sizes</a><a href="#faq" data-t="nav3">FAQ</a><a href="#buy" data-t="nav4">Order</a>
+    <button class="lang" id="lang" type="button"></button>
+    <button class="theme" id="theme" type="button" aria-label="Switch between light and dark" data-t-aria="theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
   </nav>
 </div></header>
 
@@ -184,25 +196,25 @@
   </div>
 
   <div id="buy">
-    <h1>Magnetic Air Displacement Puck</h1>
-    <p class="price">€9.90 <span>per puck · €8.90 from 6 pucks · minimum 3</span></p>
-    <p class="intro">Fills the unused air space above your glans in the cylinder. Less air to move means faster pressure transitions, most noticeable with Milking and RIP and in larger cylinders.</p>
+    <h1 data-t="h1">Magnetic Air Displacement Puck</h1>
+    <p class="price" data-t="price">€9.90 <span>per puck · €8.90 from 6 pucks · minimum 3</span></p>
+    <p class="intro" data-t="intro">Fills the unused air space above your glans in the cylinder. Less air to move means faster pressure transitions, most noticeable with Milking and RIP and in larger cylinders.</p>
 
     <div class="field">
-      <div class="flabel">Cylinder size and pucks <a href="#sizes">Size chart</a></div>
+      <div class="flabel" data-t="flabel">Cylinder size and pucks <a href="#sizes">Size chart</a></div>
       <div id="lines"></div>
       <p class="fit" id="fit"></p>
-      <p class="tip" id="tip" hidden>We recommend at least one 10 mm puck, so you can fine-tune the height.</p>
+      <p class="tip" id="tip" data-t="tip" hidden>We recommend at least one 10 mm puck, so you can fine-tune the height.</p>
       <div class="helpers">
-        <button class="linkbtn" id="helpbtn" type="button">Not sure how many you need? Measure and we work it out</button>
-        <button class="linkbtn" id="addline" type="button">+ Second cylinder size</button>
+        <button class="linkbtn" id="helpbtn" type="button" data-t="helpbtn">Not sure how many you need? Measure and we work it out</button>
+        <button class="linkbtn" id="addline" type="button" data-t="addline">+ Second cylinder size</button>
       </div>
       <div class="stack" id="helper" hidden>
         <svg id="viz" viewBox="0 0 110 250" width="96" height="218" aria-hidden="true"></svg>
         <div>
-          <label class="measure" for="gap">Empty space above your glans at working length:</label>
-          <div class="gap"><input type="number" id="gap" inputmode="numeric" min="20" max="200" placeholder="e.g. 70"><span>mm</span></div>
-          <ol class="howto">
+          <label class="measure" for="gap" data-t="measure">Empty space above your glans at working length:</label>
+          <div class="gap"><input type="number" id="gap" inputmode="numeric" min="20" max="200" placeholder="e.g. 70" data-t-ph="eg70"><span>mm</span></div>
+          <ol class="howto" data-t="howto">
             <li>Pump to your normal working length.</li>
             <li>On the cylinder scale, read where your glans ends and where the cylinder ends at the top.</li>
             <li>Enter the difference. We fill it and leave about 1 cm free, with at least one 10 mm puck for fine-tuning.</li>
@@ -212,66 +224,66 @@
     </div>
 
     <div class="field">
-      <label class="flabel" for="country">Ship to</label>
+      <label class="flabel" for="country" data-t="shipto">Ship to</label>
       <select id="country" autocomplete="shipping country-name"><option value="">Choose country</option></select>
     </div>
 
     <div class="sum">
       <dl>
         <dt id="s-q">0 pucks</dt><dd id="s-sub">€0.00</dd>
-        <dt>Shipping with tracking</dt><dd id="s-ship">choose country</dd>
-        <dt class="tot">Total</dt><dd class="tot" id="s-tot">€0.00</dd>
+        <dt data-t="shipping">Shipping with tracking</dt><dd id="s-ship">choose country</dd>
+        <dt class="tot" data-t="total">Total</dt><dd class="tot" id="s-tot">€0.00</dd>
       </dl>
       <p class="small" id="s-note" style="margin:0 0 10px">Outside Switzerland, customs may charge import VAT on delivery.</p>
       <p class="hint" id="hint" hidden></p>
       <p class="msg" id="msg"></p>
       <div id="pp-box" hidden><div id="pp-buttons"></div></div>
       <div class="done" id="pp-done" hidden></div>
-      <p class="small alt" id="mail-link">Prefer email? <button class="linkbtn" id="mail-open" type="button" style="font-size:13px">Send the order by email</button> and we reply with a PayPal invoice.</p>
+      <p class="small alt" id="mail-link" data-t="maillink">Prefer email? <button class="linkbtn" id="mail-open" type="button" style="font-size:13px">Send the order by email</button> and we reply with a PayPal invoice.</p>
       <div id="mail-form" hidden>
-        <input type="text" id="ship-name" placeholder="Full name" autocomplete="shipping name">
-        <input type="text" id="ship-street" placeholder="Street and number" autocomplete="shipping street-address">
-        <input type="text" id="ship-city" placeholder="ZIP and city" autocomplete="shipping address-level2">
-        <textarea id="notes" placeholder="Anything else? Questions, cylinder brand, ... (optional)"></textarea>
-        <button class="btn btn-main" id="send" type="button" disabled>Send order by email</button>
-        <button class="btn btn-ghost" id="copy" type="button" disabled>Copy order text</button>
-        <p class="small" style="margin:0">Your email app opens with the order filled in. We reply with the total and a PayPal invoice. No email app? Copy the text and send it to <a href="mailto:pemods@proton.me">pemods@proton.me</a>.</p>
+        <input type="text" id="ship-name" placeholder="Full name" data-t-ph="name" autocomplete="shipping name">
+        <input type="text" id="ship-street" placeholder="Street and number" data-t-ph="street" autocomplete="shipping street-address">
+        <input type="text" id="ship-city" placeholder="ZIP and city" data-t-ph="city" autocomplete="shipping address-level2">
+        <textarea id="notes" placeholder="Anything else? Questions, cylinder brand, ... (optional)" data-t-ph="notes"></textarea>
+        <button class="btn btn-main" id="send" type="button" data-t="send" disabled>Send order by email</button>
+        <button class="btn btn-ghost" id="copy" type="button" data-t="copy" disabled>Copy order text</button>
+        <p class="small" style="margin:0" data-t="mailnote">Your email app opens with the order filled in. We reply with the total and a PayPal invoice. No email app? Copy the text and send it to <a href="mailto:pemods@proton.me">pemods@proton.me</a>.</p>
       </div>
     </div>
 
     <ul class="facts">
-      <li><span>Material</span><span>Black PLA, size marked in white</span></li>
-      <li><span>Magnets</span><span>Neodymium, embedded</span></li>
-      <li><span>Heights</span><span>10 mm and 25 mm</span></li>
-      <li><span>Tolerance</span><span>±0.5 mm</span></li>
-      <li><span>Ships</span><span>Built to order, a few days</span></li>
+      <li data-t="fact1"><span>Material</span><span>Black PLA, size marked in white</span></li>
+      <li data-t="fact2"><span>Magnets</span><span>Neodymium, embedded</span></li>
+      <li data-t="fact3"><span>Heights</span><span>10 mm and 25 mm</span></li>
+      <li data-t="fact4"><span>Tolerance</span><span>±0.5 mm</span></li>
+      <li data-t="fact5"><span>Ships</span><span>Built to order, a few days</span></li>
     </ul>
   </div>
 </div>
 
 <section class="block" id="about"><div class="wrap cols">
   <div>
-    <h2>What a displacement puck does</h2>
-    <p class="lead">It fills the dead air above your glans. The less empty volume in the cylinder, the less air the pump has to move, so you reach your target vacuum faster.</p>
-    <p class="lead">You feel it most with Milking and RIP, with a manual pump or a slower electric one, and in larger cylinders with a lot of dead space. <a href="https://www.reddit.com/r/TheScienceOfPE/comments/1maiurv/i_made_a_thing_karls_displacement_puck_making/" target="_blank" rel="noopener">Karl's original concept</a> reported 50 to 60% shorter transition times.</p>
+    <h2 data-t="about">What a displacement puck does</h2>
+    <p class="lead" data-t="lead1">It fills the dead air above your glans. The less empty volume in the cylinder, the less air the pump has to move, so you reach your target vacuum faster.</p>
+    <p class="lead" data-t="lead2">You feel it most with Milking and RIP, with a manual pump or a slower electric one, and in larger cylinders with a lot of dead space. <a href="https://www.reddit.com/r/TheScienceOfPE/comments/1maiurv/i_made_a_thing_karls_displacement_puck_making/" target="_blank" rel="noopener">Karl's original concept</a> reported 50 to 60% shorter transition times.</p>
   </div>
   <div class="why">
-    <div><h3>Magnetic, no O-rings</h3><p>Embedded magnets hold the stack together. A central air channel keeps air flowing, nothing seals.</p></div>
-    <div><h3>Fully modular</h3><p>No special top piece. The magnets only let the pucks stack the right way round.</p></div>
-    <div><h3>Easy to remove</h3><p>Two magnets on top of the cylinder hold the stack. Take them off and it drops right out. No rod, no hook.</p></div>
-    <div><h3>Easy to clean</h3><p>Nothing traps fluid or wears out. Pull apart, rinse, done.</p></div>
+    <div data-t="why1"><h3>Magnetic, no O-rings</h3><p>Embedded magnets hold the stack together. A central air channel keeps air flowing, nothing seals.</p></div>
+    <div data-t="why2"><h3>Fully modular</h3><p>No special top piece. The magnets only let the pucks stack the right way round.</p></div>
+    <div data-t="why3"><h3>Easy to remove</h3><p>Two magnets on top of the cylinder hold the stack. Take them off and it drops right out. No rod, no hook.</p></div>
+    <div data-t="why4"><h3>Easy to clean</h3><p>Nothing traps fluid or wears out. Pull apart, rinse, done.</p></div>
   </div>
 </div></section>
 
 <section class="block" id="sizes"><div class="wrap cols">
   <div>
-    <h2>Sizes</h2>
-    <p class="lead">Six diameters, each as a 10 mm or 25 mm puck.</p>
-    <div class="warnline"><strong>Measure your cylinder before ordering.</strong> Tolerances vary a lot between manufacturers, so check the actual inner diameter. Not listed? Choose "Other size" and we make it for your cylinder.</div>
+    <h2 data-t="nav2">Sizes</h2>
+    <p class="lead" data-t="sizeslead">Six diameters, each as a 10 mm or 25 mm puck.</p>
+    <div class="warnline" data-t="warnline"><strong>Measure your cylinder before ordering.</strong> Tolerances vary a lot between manufacturers, so check the actual inner diameter. Not listed? Choose "Other size" and we make it for your cylinder.</div>
   </div>
   <div>
     <table>
-      <thead><tr><th>Cylinder</th><th>Inner diameter</th><th>Puck</th></tr></thead>
+      <thead><tr data-t="thead"><th>Cylinder</th><th>Inner diameter</th><th>Puck</th></tr></thead>
       <tbody>
         <tr><td>2.50"</td><td>61.2 mm</td><td>60.5 mm</td></tr>
         <tr><td>2.24"</td><td>54.9 mm</td><td>54.2 mm</td></tr>
@@ -281,31 +293,91 @@
         <tr><td>1.73"</td><td>42.4 mm</td><td>41.7 mm</td></tr>
       </tbody>
     </table>
-    <p class="small" style="margin:14px 0 0">Valve opening: 10.0 mm on all sizes. Every manufacturer uses different tolerances, so these are reference measurements and fit is not guaranteed. Flange design and inner shape can differ between cylinders of the same nominal size. Pucks may vary by ±0.5 mm.</p>
+    <p class="small" style="margin:14px 0 0" data-t="sizenote">Valve opening: 10.0 mm on all sizes. Every manufacturer uses different tolerances, so these are reference measurements and fit is not guaranteed. Flange design and inner shape can differ between cylinders of the same nominal size. Pucks may vary by ±0.5 mm.</p>
   </div>
 </div></section>
 
 <section class="block" id="faq"><div class="wrap cols">
-  <div><h2>Questions</h2><p class="lead">Anything else? Write to <a href="mailto:pemods@proton.me">pemods@proton.me</a>.</p></div>
+  <div><h2 data-t="faq">Questions</h2><p class="lead" data-t="faqlead">Anything else? Write to <a href="mailto:pemods@proton.me">pemods@proton.me</a>.</p></div>
   <div>
-    <details class="q"><summary>When does my order ship?</summary><p>Each set is built to order by hand, so allow a few days before it ships. Every parcel has tracking.</p></details>
-    <details class="q"><summary>Where do you ship?</summary><p>From Switzerland to Switzerland, Europe, Canada and Australia. Other countries on request by email.</p></details>
-    <details class="q"><summary>Will I pay customs?</summary><p>Outside Switzerland, your local customs may charge import VAT and a small handling fee on delivery. These are paid by the recipient and are not part of our price.</p></details>
-    <details class="q"><summary>How many pucks do I need?</summary><p>Fill most of the empty space above your glans and leave about 1 cm at the top. Include at least one 10 mm puck so you can adjust in small steps. The measuring tool above does the math.</p></details>
-    <details class="q"><summary>Can I return custom sizes?</summary><p>No, custom pucks are made to your measurement and can't be returned.</p></details>
+    <details class="q" data-t="q1"><summary>When does my order ship?</summary><p>Each set is built to order by hand, so allow a few days before it ships. Every parcel has tracking.</p></details>
+    <details class="q" data-t="q2"><summary>Where do you ship?</summary><p>From Switzerland to Switzerland, Europe, Canada and Australia. Other countries on request by email.</p></details>
+    <details class="q" data-t="q3"><summary>Will I pay customs?</summary><p>Outside Switzerland, your local customs may charge import VAT and a small handling fee on delivery. These are paid by the recipient and are not part of our price.</p></details>
+    <details class="q" data-t="q4"><summary>How many pucks do I need?</summary><p>Fill most of the empty space above your glans and leave about 1 cm at the top. Include at least one 10 mm puck so you can adjust in small steps. The measuring tool above does the math.</p></details>
+    <details class="q" data-t="q5"><summary>Can I return custom sizes?</summary><p>No, custom pucks are made to your measurement and can't be returned.</p></details>
   </div>
 </div></section>
 </main>
 
 <footer><div class="wrap">
-  <span>© <span id="y"></span> PEMods · Made in Switzerland · Thanks to Karl for the original idea</span>
+  <span data-t="foot">© <span id="y"></span> PEMods · Made in Switzerland · Thanks to Karl for the original idea</span>
   <span><a href="https://www.reddit.com/r/TheScienceOfPE/comments/1uhs09g/magnetic_displacement_pucks_now_available_fully/" target="_blank" rel="noopener">Reddit</a> · <a href="mailto:pemods@proton.me">pemods@proton.me</a></span>
 </div></footer>
-<div class="sticky" id="sticky"><div><b id="st-tot">€0.00</b><small id="st-q">0 pucks</small></div><a href="#buy">Checkout</a></div>
+<div class="sticky" id="sticky"><div><b id="st-tot">€0.00</b><small id="st-q">0 pucks</small></div><a href="#buy" data-t="checkout">Checkout</a></div>
 
-<script id="pp-sdk" src="https://www.paypal.com/sdk/js?client-id=BAA1SQattdPMvdaOLQsI6Tx8OGjk0RHJYLfjbpM9xn0mx0618dm-DiBx9i_KtzHWWB_wc1Bc9DkwW487W8&currency=EUR&intent=capture&disable-funding=paylater,venmo"></script>
+<script>
+  // PayPal in the page language. document.write keeps it a plain blocking script tag, like a fixed tag in the HTML.
+  document.write('<script id="pp-sdk" src="https://www.paypal.com/sdk/js?client-id=BAA1SQattdPMvdaOLQsI6Tx8OGjk0RHJYLfjbpM9xn0mx0618dm-DiBx9i_KtzHWWB_wc1Bc9DkwW487W8&currency=EUR&intent=capture&disable-funding=paylater,venmo&locale=' + (LANG === 'de' ? 'de_DE' : 'en_US') + '"><\/script>');
+</script>
 <script>
 (() => {
+  // German texts; the HTML holds the English ones. Keys match data-t (inner HTML), data-t-ph (placeholder), data-t-aria.
+  const DE = {
+    title: 'PEMods - Magnetische Luftverdrängungs-Pucks',
+    bar: 'Bezahlen mit PayPal oder Karte · Versand mit Sendungsverfolgung · Auf Bestellung gefertigt in der Schweiz',
+    nav1: 'Über', nav2: 'Grössen', nav3: 'Fragen', nav4: 'Bestellen', theme: 'Zwischen hell und dunkel wechseln',
+    h1: 'Magnetischer Luftverdrängungs-Puck',
+    price: '9,90 € <span>pro Puck · 8,90 € ab 6 Pucks · mindestens 3</span>',
+    intro: 'Füllt den ungenutzten Luftraum über deiner Eichel im Zylinder. Weniger Luft heisst schnellere Druckwechsel, am deutlichsten bei Milking und RIP und in grösseren Zylindern.',
+    flabel: 'Zylindergrösse und Pucks <a href="#sizes">Grössentabelle</a>',
+    tip: 'Wir empfehlen mindestens einen 10-mm-Puck, damit du die Höhe fein einstellen kannst.',
+    helpbtn: 'Nicht sicher, wie viele du brauchst? Miss nach, wir rechnen es aus',
+    addline: '+ Zweite Zylindergrösse',
+    measure: 'Leerer Raum über deiner Eichel bei Arbeitslänge:', eg70: 'z. B. 70',
+    howto: '<li>Auf deine normale Arbeitslänge pumpen.</li><li>Auf der Skala des Zylinders ablesen, wo deine Eichel endet und wo der Zylinder oben endet.</li><li>Die Differenz eintragen. Wir füllen sie und lassen etwa 1 cm frei, mit mindestens einem 10-mm-Puck zum Feineinstellen.</li>',
+    shipto: 'Lieferland', shipping: 'Versand mit Sendungsverfolgung', total: 'Gesamt',
+    maillink: 'Lieber per E-Mail? <button class="linkbtn" id="mail-open" type="button" style="font-size:13px">Bestellung per E-Mail senden</button>, wir antworten mit einer PayPal-Rechnung.',
+    name: 'Vor- und Nachname', street: 'Strasse und Hausnummer', city: 'PLZ und Ort', notes: 'Sonst noch etwas? Fragen, Marke des Zylinders, ... (freiwillig)',
+    send: 'Bestellung per E-Mail senden', copy: 'Bestelltext kopieren',
+    mailnote: 'Dein Mailprogramm öffnet sich mit der fertigen Bestellung. Wir antworten mit dem Gesamtbetrag und einer PayPal-Rechnung. Kein Mailprogramm? Text kopieren und an <a href="mailto:pemods@proton.me">pemods@proton.me</a> senden.',
+    fact1: '<span>Material</span><span>Schwarzes PLA, Grösse weiss markiert</span>',
+    fact2: '<span>Magnete</span><span>Neodym, eingebettet</span>',
+    fact3: '<span>Höhen</span><span>10 mm und 25 mm</span>',
+    fact4: '<span>Toleranz</span><span>±0,5 mm</span>',
+    fact5: '<span>Versand</span><span>Auf Bestellung gefertigt, wenige Tage</span>',
+    about: 'Was ein Verdrängungs-Puck macht',
+    lead1: 'Er füllt die tote Luft über deiner Eichel. Je weniger Leervolumen im Zylinder, desto weniger Luft muss die Pumpe bewegen, und du erreichst dein Ziel-Vakuum schneller.',
+    lead2: 'Am meisten merkst du es bei Milking und RIP, mit einer Handpumpe oder einer langsameren elektrischen und in grossen Zylindern mit viel Leerraum. <a href="https://www.reddit.com/r/TheScienceOfPE/comments/1maiurv/i_made_a_thing_karls_displacement_puck_making/" target="_blank" rel="noopener">Karls ursprüngliches Konzept</a> berichtete von 50 bis 60 % kürzeren Übergangszeiten.',
+    why1: '<h3>Magnetisch, ohne O-Ringe</h3><p>Eingebettete Magnete halten den Stapel zusammen. Ein Luftkanal in der Mitte lässt die Luft durch, nichts dichtet ab.</p>',
+    why2: '<h3>Voll modular</h3><p>Kein spezielles Oberteil. Die Magnete lassen die Pucks nur richtig herum stapeln.</p>',
+    why3: '<h3>Leicht herauszunehmen</h3><p>Zwei Magnete oben auf dem Zylinder halten den Stapel. Nimm sie weg, und er fällt heraus. Kein Stab, kein Haken.</p>',
+    why4: '<h3>Leicht zu reinigen</h3><p>Nichts hält Flüssigkeit fest oder nutzt sich ab. Auseinandernehmen, abspülen, fertig.</p>',
+    sizeslead: 'Sechs Durchmesser, jeweils als 10-mm- oder 25-mm-Puck.',
+    warnline: '<strong>Miss deinen Zylinder vor der Bestellung.</strong> Die Toleranzen unterscheiden sich stark zwischen den Herstellern, prüf also den echten Innendurchmesser. Nicht dabei? Wähle „Andere Grösse“, dann machen wir sie für deinen Zylinder.',
+    thead: '<th>Zylinder</th><th>Innendurchmesser</th><th>Puck</th>',
+    sizenote: 'Ventilöffnung: 10,0 mm bei allen Grössen. Jeder Hersteller hat andere Toleranzen, das sind also Referenzmasse, und die Passform ist nicht garantiert. Flansch und Innenform können sich bei Zylindern gleicher Nenngrösse unterscheiden. Pucks können um ±0,5 mm abweichen.',
+    faq: 'Fragen', faqlead: 'Sonst noch etwas? Schreib an <a href="mailto:pemods@proton.me">pemods@proton.me</a>.',
+    q1: '<summary>Wann wird meine Bestellung verschickt?</summary><p>Jedes Set wird von Hand auf Bestellung gefertigt, rechne also mit ein paar Tagen bis zum Versand. Jedes Paket hat eine Sendungsverfolgung.</p>',
+    q2: '<summary>Wohin liefert ihr?</summary><p>Von der Schweiz in die Schweiz, nach Europa, Kanada und Australien. Andere Länder auf Anfrage per E-Mail.</p>',
+    q3: '<summary>Muss ich Zoll bezahlen?</summary><p>Ausserhalb der Schweiz kann dein Zoll bei der Zustellung Einfuhrumsatzsteuer und eine kleine Bearbeitungsgebühr verlangen. Diese zahlt der Empfänger, sie sind nicht in unserem Preis enthalten.</p>',
+    q4: '<summary>Wie viele Pucks brauche ich?</summary><p>Füll den grössten Teil des leeren Raums über deiner Eichel und lass oben etwa 1 cm frei. Nimm mindestens einen 10-mm-Puck dazu, damit du in kleinen Schritten anpassen kannst. Die Messhilfe oben rechnet es aus.</p>',
+    q5: '<summary>Kann ich Sondergrössen zurückgeben?</summary><p>Nein, Sonder-Pucks werden nach deinem Mass gefertigt und können nicht zurückgegeben werden.</p>',
+    foot: '© <span id="y"></span> PEMods · Hergestellt in der Schweiz · Danke an Karl für die ursprüngliche Idee',
+    checkout: 'Zur Kasse',
+  };
+  const de = LANG === 'de', t = (en, d) => de ? d : en;
+  if (de) {
+    document.title = DE.title;
+    document.querySelectorAll('[data-t]').forEach(e => { e.innerHTML = DE[e.dataset.t]; });
+    document.querySelectorAll('[data-t-ph]').forEach(e => { e.placeholder = DE[e.dataset.tPh]; });
+    document.querySelectorAll('[data-t-aria]').forEach(e => { e.setAttribute('aria-label', DE[e.dataset.tAria]); });
+    document.querySelectorAll('#sizes td').forEach(e => { e.textContent = e.textContent.replace(/(\d)\.(\d mm)/, '$1,$2'); });
+  }
+  const langBtn = document.getElementById('lang');
+  langBtn.textContent = de ? 'EN' : 'DE';
+  langBtn.setAttribute('aria-label', de ? 'Switch to English' : 'Auf Deutsch wechseln');
+  langBtn.onclick = () => { location.search = 'lang=' + (de ? 'en' : 'de'); };
+
   const SIZES = [['2.50', '61.2'], ['2.24', '54.9'], ['2.125', '52.0'], ['2.00', '49.0'], ['1.85', '45.3'], ['1.73', '42.4']];
   const MIN = 3, PRICE = 9.90, BULK = 8.90, BULK_FROM = 6, MAX = 30;
   // Shipping by weight: Swiss Post small goods international (CHF), price to customer in EUR rounded up to .90
@@ -322,28 +394,32 @@
   const ZONE0 = ['Switzerland', 'Liechtenstein'], ZONE2 = ['Australia', 'Canada'];
   const ZONE1 = Object.keys(ISO).filter(c => !ZONE0.includes(c) && !ZONE2.includes(c));
   const OTHER = 'Other country (shipping quoted by email)';
+  const regionName = (() => { try { const dn = new Intl.DisplayNames(['de'], { type: 'region' }); return c => (de && ISO[c] && dn.of(ISO[c])) || c; } catch (e) { return c => c; } })();
+  const countryText = c => c === OTHER ? t(OTHER, 'Anderes Land (Versand per E-Mail-Angebot)') : regionName(c);
   const MAIL = 'pemods@proton.me';
   const $ = id => document.getElementById(id);
-  const eur = n => '€' + n.toFixed(2);
+  const eur = n => de ? n.toFixed(2).replace('.', ',') + ' €' : '€' + n.toFixed(2);
   const zoneOf = c => ZONE0.includes(c) ? 0 : ZONE1.includes(c) ? 1 : ZONE2.includes(c) ? 2 : null;
   const toEur = chf => Math.ceil(chf + 0.4) - 0.10;
 
   // country list
   const sel = $('country');
-  const opt = v => { const o = document.createElement('option'); o.value = o.textContent = v; return o; };
-  const grp = (label, list) => { const g = document.createElement('optgroup'); g.label = label; list.forEach(c => g.appendChild(opt(c))); sel.appendChild(g); };
-  grp('Switzerland', ZONE0); grp('Europe', ZONE1); grp('Overseas', ZONE2); sel.appendChild(opt(OTHER));
+  const opt = v => { const o = document.createElement('option'); o.value = v; o.textContent = countryText(v); return o; };
+  const grp = (label, list) => { const g = document.createElement('optgroup'); g.label = label; [...list].sort((a, b) => countryText(a).localeCompare(countryText(b), LANG)).forEach(c => g.appendChild(opt(c))); sel.appendChild(g); };
+  grp(t('Switzerland', 'Schweiz'), ZONE0); grp(t('Europe', 'Europa'), ZONE1); grp(t('Overseas', 'Übersee'), ZONE2); sel.appendChild(opt(OTHER));
+  sel.options[0].textContent = t('Choose country', 'Land wählen');
 
   // order lines: one per cylinder size
   const lines = [];
-  const sizeOptions = '<option value="">Choose your cylinder</option>' + SIZES.map(([s, d]) => `<option value="${s}">${s}" (inner diameter ${d} mm)</option>`).join('') + '<option value="custom">Other size (custom made)</option>';
-  const stepper = h => `<div class="count"><span>${h} mm <small>tall</small></span><div class="stepper" data-h="${h}"><button type="button" data-d="-1" aria-label="Fewer ${h} mm pucks">−</button><output>0</output><button type="button" data-d="1" aria-label="More ${h} mm pucks">+</button></div></div>`;
+  const mm = d => de ? d.replace('.', ',') : d;
+  const sizeOptions = `<option value="">${t('Choose your cylinder', 'Zylinder wählen')}</option>` + SIZES.map(([s, d]) => `<option value="${s}">${s}" (${t('inner diameter', 'Innendurchmesser')} ${mm(d)} mm)</option>`).join('') + `<option value="custom">${t('Other size (custom made)', 'Andere Grösse (Sonderanfertigung)')}</option>`;
+  const stepper = h => `<div class="count"><span>${h} mm <small>${t('tall', 'hoch')}</small></span><div class="stepper" data-h="${h}"><button type="button" data-d="-1" aria-label="${t(`Fewer ${h} mm pucks`, `Weniger ${h}-mm-Pucks`)}">−</button><output>0</output><button type="button" data-d="1" aria-label="${t(`More ${h} mm pucks`, `Mehr ${h}-mm-Pucks`)}">+</button></div></div>`;
   function addLine(n25, n10) {
     const line = { size: '', custom: '', n: { 25: n25, 10: n10 }, el: document.createElement('div') };
     line.el.className = 'line';
-    line.el.innerHTML = `<select aria-label="Cylinder size">${sizeOptions}</select>
-      <div class="custom-id" hidden><input type="text" placeholder="Your cylinder's inner diameter, e.g. 57.2 mm"><p class="small" style="margin:6px 0 0">Custom pucks are made to your measurement and can't be returned.</p></div>
-      <div class="counts">${stepper(25)}${stepper(10)}</div>${lines.length ? '<button class="remove" type="button">Remove this size</button>' : ''}`;
+    line.el.innerHTML = `<select aria-label="${t('Cylinder size', 'Zylindergrösse')}">${sizeOptions}</select>
+      <div class="custom-id" hidden><input type="text" placeholder="${t("Your cylinder's inner diameter, e.g. 57.2 mm", 'Innendurchmesser deines Zylinders, z. B. 57,2 mm')}"><p class="small" style="margin:6px 0 0">${t("Custom pucks are made to your measurement and can't be returned.", 'Sonder-Pucks werden nach deinem Mass gefertigt und können nicht zurückgegeben werden.')}</p></div>
+      <div class="counts">${stepper(25)}${stepper(10)}</div>${lines.length ? `<button class="remove" type="button">${t('Remove this size', 'Diese Grösse entfernen')}</button>` : ''}`;
     const s = line.el.querySelector('select'), c = line.el.querySelector('.custom-id');
     s.onchange = () => { line.size = s.value; c.hidden = s.value !== 'custom'; update(); };
     c.querySelector('input').oninput = e => { line.custom = e.target.value.trim(); update(); };
@@ -382,15 +458,15 @@
     }
     let warn = '';
     const used = lines.filter(l => l.n[25] + l.n[10] > 0);
-    if (used.some(l => !l.size)) warn = 'Choose your cylinder size.';
-    else if (used.some(l => l.size === 'custom' && !l.custom)) warn = 'Enter the inner diameter for your custom pucks.';
-    else if (total < MIN) warn = `Minimum order is ${MIN} pucks.`;
-    else if (!sel.value) warn = 'Choose where we ship to.';
+    if (used.some(l => !l.size)) warn = t('Choose your cylinder size.', 'Wähle deine Zylindergrösse.');
+    else if (used.some(l => l.size === 'custom' && !l.custom)) warn = t('Enter the inner diameter for your custom pucks.', 'Gib den Innendurchmesser für deine Sonder-Pucks an.');
+    else if (total < MIN) warn = t(`Minimum order is ${MIN} pucks.`, `Mindestbestellung sind ${MIN} Pucks.`);
+    else if (!sel.value) warn = t('Choose where we ship to.', 'Wähle, wohin wir liefern.');
     const sum = total * each;
     return { total, each, sum, ship, room, zone, grand: sum + (ship || 0), ok: !warn, warn };
   }
 
-  function name(l) { return l.size === 'custom' ? `Custom (inner diameter ${l.custom || '?'})` : `${l.size}" cylinder`; }
+  function name(l) { return l.size === 'custom' ? t(`Custom (inner diameter ${l.custom || '?'})`, `Sondergrösse (Innendurchmesser ${l.custom || '?'})`) : `${l.size}" ${t('cylinder', 'Zylinder')}`; }
   function orderLines() {
     const out = [];
     for (const l of lines) for (const h of [25, 10]) if (l.n[h]) out.push(`${l.n[h]} x ${name(l)}, ${h} mm`);
@@ -398,6 +474,17 @@
   }
   function text() {
     const s = state(), val = id => $(id).value.trim(), notes = val('notes');
+    if (de) return [
+      'Hallo PEMods,', '',
+      'MEINE BESTELLUNG', ...orderLines(), '',
+      `${s.total} Pucks x ${eur(s.each)} = ${eur(s.sum)}`,
+      s.ship !== null ? `Versand mit Sendungsverfolgung: ${eur(s.ship)}` : 'Versand: bitte Angebot schicken',
+      `Gesamt: ${s.ship !== null ? eur(s.grand) : eur(s.sum) + ' plus Versand'}`, '',
+      'LIEFERADRESSE', `Name: ${val('ship-name')}`, `Strasse: ${val('ship-street')}`, `PLZ und Ort: ${val('ship-city')}`,
+      `Land: ${sel.value === OTHER ? 'Anderes Land' : countryText(sel.value) + (ISO[sel.value] ? ` (${ISO[sel.value]})` : '')}`, '',
+      ...(notes ? ['NOTIZEN', notes, ''] : []),
+      'Danke!',
+    ].join('\r\n');
     return [
       'Hi PEMods,', '',
       'MY ORDER', ...orderLines(), '',
@@ -430,22 +517,22 @@
   function update() {
     for (const l of lines) l.el.querySelectorAll('.stepper').forEach(st => st.querySelector('output').textContent = l.n[st.dataset.h]);
     const s = state(), st = drawStack(), fit = $('fit');
-    if ($('helper').hidden || !st.g) { fit.className = 'fit'; fit.textContent = lines.length > 1 ? '' : `Stack height ${st.stackMm} mm.`; }
-    else if (st.free < 5) { fit.className = 'fit warn'; fit.textContent = `Stack ${st.stackMm} mm, only ${st.free} mm free. Remove a puck.`; }
-    else if (st.free > 20) { fit.className = 'fit warn'; fit.textContent = `Stack ${st.stackMm} mm, ${st.free} mm still empty. Add a puck.`; }
-    else { fit.className = 'fit ok'; fit.textContent = `Stack ${st.stackMm} mm, about ${st.free} mm free at the top. Good fit.`; }
+    if ($('helper').hidden || !st.g) { fit.className = 'fit'; fit.textContent = lines.length > 1 ? '' : t(`Stack height ${st.stackMm} mm.`, `Stapelhöhe ${st.stackMm} mm.`); }
+    else if (st.free < 5) { fit.className = 'fit warn'; fit.textContent = t(`Stack ${st.stackMm} mm, only ${st.free} mm free. Remove a puck.`, `Stapel ${st.stackMm} mm, nur ${st.free} mm frei. Nimm einen Puck weg.`); }
+    else if (st.free > 20) { fit.className = 'fit warn'; fit.textContent = t(`Stack ${st.stackMm} mm, ${st.free} mm still empty. Add a puck.`, `Stapel ${st.stackMm} mm, noch ${st.free} mm leer. Nimm einen Puck dazu.`); }
+    else { fit.className = 'fit ok'; fit.textContent = t(`Stack ${st.stackMm} mm, about ${st.free} mm free at the top. Good fit.`, `Stapel ${st.stackMm} mm, oben etwa ${st.free} mm frei. Passt gut.`); }
     $('tip').hidden = !lines.some(l => l.n[25] > 0 && l.n[10] === 0);
 
-    $('s-q').textContent = `${s.total} ${s.total === 1 ? 'puck' : 'pucks'} × ${eur(s.each)}`;
+    $('s-q').textContent = `${s.total} ${s.total === 1 ? t('puck', 'Puck') : t('pucks', 'Pucks')} × ${eur(s.each)}`;
     $('s-sub').textContent = eur(s.sum);
-    $('s-ship').textContent = !sel.value ? 'choose country' : s.ship !== null ? eur(s.ship) : 'quoted by email';
+    $('s-ship').textContent = !sel.value ? t('choose country', 'Land wählen') : s.ship !== null ? eur(s.ship) : t('quoted by email', 'Angebot per E-Mail');
     $('s-tot').textContent = $('st-tot').textContent = eur(s.ship !== null ? s.grand : s.sum);
     const sizes = lines.filter(l => l.size).map(l => l.size === 'custom' ? 'custom' : l.size + '"');
-    $('st-q').textContent = `${s.total} pucks${sizes.length ? ' · ' + sizes.join(' + ') : ''}`;
-    $('s-note').textContent = s.zone === 0 ? 'Shipped within Switzerland, no customs.' : 'Outside Switzerland, customs may charge import VAT on delivery.';
+    $('st-q').textContent = `${s.total} ${t('pucks', 'Pucks')}${sizes.length ? ' · ' + sizes.join(' + ').replace('custom', t('custom', 'Sondergrösse')) : ''}`;
+    $('s-note').textContent = s.zone === 0 ? t('Shipped within Switzerland, no customs.', 'Versand innerhalb der Schweiz, kein Zoll.') : t('Outside Switzerland, customs may charge import VAT on delivery.', 'Ausserhalb der Schweiz kann der Zoll bei der Zustellung Einfuhrumsatzsteuer verlangen.');
     let hint = '';
-    if (s.total >= MIN && s.total < BULK_FROM) hint = `Add ${BULK_FROM - s.total} more for ${eur(BULK)} per puck.`;
-    else if (s.total >= MIN && s.ship !== null && s.zone && s.room > 0) hint = `You can add ${s.room} more ${s.room === 1 ? 'puck' : 'pucks'} for the same shipping.`;
+    if (s.total >= MIN && s.total < BULK_FROM) hint = t(`Add ${BULK_FROM - s.total} more for ${eur(BULK)} per puck.`, `Nimm noch ${BULK_FROM - s.total} dazu, dann kostet jeder Puck ${eur(BULK)}.`);
+    else if (s.total >= MIN && s.ship !== null && s.zone && s.room > 0) hint = t(`You can add ${s.room} more ${s.room === 1 ? 'puck' : 'pucks'} for the same shipping.`, `Du kannst noch ${s.room} ${s.room === 1 ? 'Puck' : 'Pucks'} dazunehmen, der Versand bleibt gleich.`);
     $('hint').textContent = hint; $('hint').hidden = !hint;
     if (!paid) $('msg').textContent = s.warn;
     $('send').disabled = $('copy').disabled = !s.ok;
@@ -457,11 +544,11 @@
   $('mail-open').onclick = () => { $('mail-form').hidden = false; $('ship-name').focus(); };
   sel.addEventListener('change', update);
   ['ship-name', 'ship-street', 'ship-city', 'notes'].forEach(id => $(id).addEventListener('input', update));
-  $('send').onclick = () => { const s = state(); location.href = `mailto:${MAIL}?subject=${encodeURIComponent(`Puck order (${s.total} pucks)`)}&body=${encodeURIComponent(text())}`; };
+  $('send').onclick = () => { const s = state(); location.href = `mailto:${MAIL}?subject=${encodeURIComponent(t(`Puck order (${s.total} pucks)`, `Puck-Bestellung (${s.total} Pucks)`))}&body=${encodeURIComponent(text())}`; };
   $('copy').onclick = async e => {
     const btn = e.currentTarget;
-    try { await navigator.clipboard.writeText(text()); btn.textContent = 'Copied'; } catch { prompt('Copy this text:', text()); }
-    setTimeout(() => { btn.textContent = 'Copy order text'; }, 2000);
+    try { await navigator.clipboard.writeText(text()); btn.textContent = t('Copied', 'Kopiert'); } catch { prompt(t('Copy this text:', 'Diesen Text kopieren:'), text()); }
+    setTimeout(() => { btn.textContent = t('Copy order text', 'Bestelltext kopieren'); }, 2000);
   };
 
   // PayPal checkout (runs when the SDK above loaded; otherwise email ordering only). Amounts in cents.
@@ -470,13 +557,13 @@
   function ppOrder() {
     const s = state(), each = Math.round(s.each * 100), ship = Math.round(s.ship * 100), items = [];
     for (const l of lines) for (const h of [25, 10]) if (l.n[h]) {
-      const what = l.size === 'custom' ? `custom ${l.custom.slice(0, 40)}` : `${l.size} in`;
-      items.push({ name: `Air displacement puck ${what}, ${h} mm`, quantity: String(l.n[h]), unit_amount: money(each), sku: 'PM-PUCK' });
+      const what = l.size === 'custom' ? `${t('custom', 'Sondergrösse')} ${l.custom.slice(0, 40)}` : `${l.size} in`;
+      items.push({ name: `${t('Air displacement puck', 'Luftverdrängungs-Puck')} ${what}, ${h} mm`, quantity: String(l.n[h]), unit_amount: money(each), sku: 'PM-PUCK' });
     }
     const itemTotal = s.total * each;
     return {
       intent: 'CAPTURE',
-      purchase_units: [{ description: 'PEMods order', amount: { ...money(itemTotal + ship), breakdown: { item_total: money(itemTotal), shipping: money(ship) } }, items }],
+      purchase_units: [{ description: t('PEMods order', 'PEMods Bestellung'), amount: { ...money(itemTotal + ship), breakdown: { item_total: money(itemTotal), shipping: money(ship) } }, items }],
       application_context: { brand_name: 'PEMods', shipping_preference: 'GET_FROM_FILE' },
     };
   }
@@ -488,7 +575,7 @@
       onClick: (data, actions) => {
         const s = state();
         if (s.ok && s.ship !== null) return actions.resolve();
-        $('msg').textContent = s.warn || 'Shipping to this country is quoted by email.';
+        $('msg').textContent = s.warn || t('Shipping to this country is quoted by email.', 'Für dieses Land schicken wir das Versandangebot per E-Mail.');
         return actions.reject();
       },
       createOrder: (data, actions) => actions.order.create(ppOrder()),
@@ -498,10 +585,11 @@
       onApprove: (data, actions) => actions.order.capture().then(o => {
         paid = true;
         $('pp-box').hidden = true; $('msg').textContent = ''; $('mail-link').hidden = true; $('mail-form').hidden = true;
-        $('pp-done').innerHTML = `<strong>Thank you, payment received!</strong> Your pucks will be made and shipped soon. We'll email you the tracking number. Order reference: ${o.id}`;
+        $('pp-done').innerHTML = t(`<strong>Thank you, payment received!</strong> Your pucks will be made and shipped soon. We'll email you the tracking number. Order reference: ${o.id}`,
+          `<strong>Danke, Zahlung erhalten!</strong> Deine Pucks werden gefertigt und bald verschickt. Die Sendungsnummer schicken wir dir per E-Mail. Bestellnummer: ${o.id}`);
         $('pp-done').hidden = false;
       }),
-      onError: () => { $('msg').textContent = 'PayPal had a problem. Please try again, or send the order by email.'; },
+      onError: () => { $('msg').textContent = t('PayPal had a problem. Please try again, or send the order by email.', 'PayPal hatte ein Problem. Bitte nochmal versuchen oder die Bestellung per E-Mail senden.'); },
     }).render('#pp-buttons');
   }
 
