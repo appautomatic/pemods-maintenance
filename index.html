@@ -136,7 +136,8 @@
   /* desktop: picture and thumbnails fit on the screen, the buy box gets a bit more room */
   @media (min-width: 901px) {
     .product { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
-    .slide { max-height:calc(100vh - 210px); min-height:420px; }
+    .slide { max-height:calc(100vh - 210px); min-height:420px; background:#f2f2f2; }
+    .slide > img { object-fit:contain; }
   }
   @media (max-width: 900px) {
     .wrap { padding:0 16px; }
