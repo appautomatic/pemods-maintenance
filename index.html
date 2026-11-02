@@ -98,6 +98,10 @@
   .summary dd { margin: 0; text-align: right; font-weight: 600; }
   .summary .total { font-size: 20px; font-weight: 700; border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px; }
   .summary .btn { width: 100%; margin-top: 10px; }
+  #pp-box { margin-top: 12px; }
+  #pp-box .muted { margin: 6px 0 0; text-align: center; }
+  .or { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; margin: 16px 0 4px; }
+  .or::before, .or::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
   .warn { color: #a3470f; font-size: 14px; min-height: 1.4em; margin: 8px 0 0; }
   .steps { margin: 18px 0 0; padding-left: 20px; font-size: 14px; color: #333; }
   .steps li { margin-bottom: 6px; }
@@ -236,6 +240,12 @@
           </dl>
           <p class="muted small" style="margin:0" id="s-note">Outside Switzerland, customs may charge import VAT on delivery.</p>
           <p class="warn" id="s-warn"></p>
+          <div id="pp-box" hidden>
+            <div id="pp-buttons"></div>
+            <p class="muted small" id="pp-info">Pay now with PayPal or card. Your shipping address is taken from PayPal.</p>
+          </div>
+          <div class="note-box" id="pp-done" hidden></div>
+          <p class="or" id="pp-or" hidden>or order by email</p>
           <button class="btn btn-primary" id="send" type="button" disabled>Send order by email</button>
           <button class="btn btn-ghost" id="copy" type="button" disabled>Copy order text</button>
           <ol class="steps">
@@ -258,6 +268,7 @@
 
   <footer>&copy; <span id="y"></span> PEMods &middot; Made in Switzerland &middot; <a href="mailto:pemods@proton.me">pemods@proton.me</a></footer>
 
+<!-- PayPal: <script id="pp-sdk" src="https://www.paypal.com/sdk/js?client-id=CLIENT_ID&currency=EUR&intent=capture&disable-funding=paylater,venmo"></script> -->
 <script>
 (() => {
   const SIZES = [
@@ -266,7 +277,7 @@
   ];
   const MIN = 3, PRICE = 9.90, BULK = 8.90, BULK_FROM = 6, MAX = 30;
   // Shipping by weight: Swiss Post small goods international (CHF), price to customer in EUR rounded up to .90
-  const GRAMS = { 10: 55, 25: 55 }, PACKAGING = 35;
+  const GRAMS = { 10: 40, 25: 40 }, PACKAGING = 0; // 40 g per puck covers box, bubble wrap and paper
   const TIERS = [100, 250, 500, 1000, 1500, 2000];
   const RATES = { 1: [4.50, 9.50, 14.50, 20.50, 25.50, 30.50], 2: [7.50, 12.50, 17.50, 27.50, 32.50, 37.50] };
   const SHIP_CH = 7.50;
@@ -279,6 +290,14 @@
   const zoneOf = c => c === 'Switzerland' || c === 'Liechtenstein' ? 0 : ZONE1.includes(c) ? 1 : ZONE2.includes(c) ? 2 : null;
   const toEur = chf => Math.ceil(chf + 0.4) - 0.10;
   const MAIL = 'pemods@proton.me';
+  // PayPal checkout runs when the SDK tag (id pp-sdk, before this script) is on the page; without it: email ordering only.
+  const PAYPAL_ON = !!(window.paypal && window.paypal.Buttons);
+  const ISO = { Switzerland: 'CH', Liechtenstein: 'LI', Albania: 'AL', Andorra: 'AD', Austria: 'AT', Belgium: 'BE', 'Bosnia and Herzegovina': 'BA',
+    Bulgaria: 'BG', Croatia: 'HR', Cyprus: 'CY', 'Czech Republic': 'CZ', Denmark: 'DK', Estonia: 'EE', 'Faroe Islands': 'FO', Finland: 'FI',
+    France: 'FR', Germany: 'DE', Gibraltar: 'GI', Greece: 'GR', Hungary: 'HU', Iceland: 'IS', Ireland: 'IE', Italy: 'IT', Kosovo: 'XK',
+    Latvia: 'LV', Lithuania: 'LT', Luxembourg: 'LU', Malta: 'MT', Moldova: 'MD', Monaco: 'MC', Montenegro: 'ME', Netherlands: 'NL',
+    'North Macedonia': 'MK', Norway: 'NO', Poland: 'PL', Portugal: 'PT', Romania: 'RO', 'San Marino': 'SM', Serbia: 'RS', Slovakia: 'SK',
+    Slovenia: 'SI', Spain: 'ES', Sweden: 'SE', Turkey: 'TR', Ukraine: 'UA', 'United Kingdom': 'GB', Australia: 'AU', Canada: 'CA' };
   const qty = {};
   const eur = n => '€' + n.toFixed(2);
 
@@ -372,6 +391,57 @@
     document.getElementById('s-warn').textContent = s.warn || hint;
     document.getElementById('send').disabled = !s.ok;
     document.getElementById('copy').disabled = !s.ok;
+    if (PAYPAL_ON && !paid) {
+      const payable = s.ship !== null;
+      document.getElementById('pp-box').hidden = !payable;
+      document.getElementById('pp-or').hidden = !payable;
+      if (ppActions) (s.ok && payable ? ppActions.enable() : ppActions.disable());
+    }
+  }
+
+  // PayPal: items and shipping in EUR, amounts in cents so the breakdown always adds up
+  let ppActions = null, paid = false;
+  const money = c => ({ currency_code: 'EUR', value: (c / 100).toFixed(2) });
+  function ppOrder() {
+    const s = state(), each = Math.round(s.each * 100), ship = Math.round(s.ship * 100);
+    const items = [];
+    for (const [key, n] of Object.entries(qty)) {
+      if (!n) continue;
+      const [size, h] = key.split('|');
+      const what = size === 'custom' ? `custom ${document.getElementById('custom-id').value.trim().slice(0, 40)}` : `${size} in`;
+      items.push({ name: `Air displacement puck ${what}, ${h} mm`, quantity: String(n), unit_amount: money(each), sku: 'PM-PUCK' });
+    }
+    const itemTotal = s.total * each;
+    const notes = document.getElementById('notes').value.trim();
+    return {
+      intent: 'CAPTURE',
+      purchase_units: [{
+        description: ('PEMods order' + (notes ? '. Notes: ' + notes : '')).slice(0, 127),
+        amount: { ...money(itemTotal + ship), breakdown: { item_total: money(itemTotal), shipping: money(ship) } },
+        items,
+      }],
+      application_context: { brand_name: 'PEMods', shipping_preference: 'GET_FROM_FILE' },
+    };
+  }
+  function ppDone(html) {
+    paid = true;
+    document.getElementById('pp-box').hidden = true;
+    document.getElementById('pp-or').hidden = true;
+    const box = document.getElementById('pp-done'); box.innerHTML = html; box.hidden = false;
+  }
+  if (PAYPAL_ON) {
+    paypal.Buttons({
+      style: { layout: 'vertical', color: 'black', shape: 'rect', label: 'pay', height: 48 },
+      onInit: (data, actions) => { ppActions = actions; update(); },
+      onClick: (data, actions) => (state().ok ? actions.resolve() : actions.reject()),
+      createOrder: (data, actions) => actions.order.create(ppOrder()),
+      onShippingAddressChange: (data, actions) => {
+        if (data.shippingAddress.countryCode !== ISO[sel.value]) return actions.reject(data.errors && data.errors.COUNTRY_ERROR);
+      },
+      onApprove: (data, actions) => actions.order.capture().then(o => ppDone(
+        `<strong>Thank you, payment received!</strong> Your pucks will be printed and shipped soon. We'll email you the tracking number. Order reference: ${o.id}`)),
+      onError: () => { document.getElementById('s-warn').textContent = 'PayPal had a problem. Please try again, or order by email below.'; },
+    }).render("#pp-buttons");
   }
 
   document.getElementById('send').addEventListener('click', () => {
