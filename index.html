@@ -4,465 +4,527 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PEMods - Magnetic Air Displacement Pucks</title>
-<meta name="description" content="Modular, magnetic air displacement pucks for pumping cylinders. 3D printed in Switzerland, shipped from Switzerland. Order online with PayPal or card.">
+<meta name="description" content="Modular, magnetic air displacement pucks for pumping cylinders. Made to order in Switzerland. Order online with PayPal or card.">
 <meta property="og:title" content="PEMods - Magnetic Air Displacement Pucks">
 <meta property="og:description" content="Modular, magnetic, no O-rings. Order online, shipped from Switzerland.">
 <meta property="og:image" content="https://pemods.com/assets/sizes.jpg">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  // Light is the default; the moon button switches to dark and the choice is remembered.
+  try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
+</script>
 <style>
-  :root { color-scheme: light; --text:#1a1a1a; --muted:#666; --line:#e6e6e6; --soft:#f4f4f4; --cream:#faf8f3; --radius:.5rem; }
-  * { box-sizing: border-box; }
-  [hidden] { display: none !important; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: #fff; color: var(--text); -webkit-font-smoothing: antialiased; line-height: 1.6;
-  }
-  a { color: inherit; }
-  img, video { display: block; max-width: 100%; }
+  :root { --ink:#111; --muted:#6d6d6d; --line:#e4e4e4; --bg:#fff; --soft:#f4f4f2; --field:#fff; --fieldline:#cfcfcf;
+          --acc:#1e3a5c; --acc-text:#fff; --skin:#d8b49a; --ok:#2f6b3a; --warn:#9a4a12; --cyl:#fbfbfb; --cylline:#c4c4c4; --puck:#151515; color-scheme:light; }
+  :root[data-theme="dark"] { --ink:#f3eee8; --muted:#a59d94; --line:#2e2a26; --bg:#151312; --soft:#1e1b19; --field:#1e1b19; --fieldline:#3a3530;
+          --acc:#8fb3e0; --acc-text:#151312; --skin:#ffdcc4; --ok:#9cc58a; --warn:#f0b35a; --cyl:#24211e; --cylline:#5a534c; --puck:#0a0a0a; color-scheme:dark; }
+  * { box-sizing:border-box; } [hidden] { display:none !important; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:Archivo, system-ui, sans-serif; color:var(--ink); background:var(--bg); line-height:1.55; -webkit-font-smoothing:antialiased; }
+  img, video { display:block; max-width:100%; }
+  a { color:inherit; }
+  .wrap { max-width:1180px; margin:0 auto; padding:0 32px; }
 
-  .announcement { background: #000; color: #fff; text-align: center; font-size: 13px; font-weight: 500; letter-spacing: .02em; padding: 10px 16px; }
-  header { padding: 22px 24px 18px; text-align: center; border-bottom: 1px solid var(--line); }
-  header img { height: 56px; width: auto; display: inline-block; }
-  nav { margin-top: 14px; font-size: 14px; color: var(--muted); }
-  nav a { text-decoration: none; margin: 0 12px; }
-  nav a:hover { color: var(--text); text-decoration: underline; }
+  .bar { background:var(--acc); color:#fff; text-align:center; font-size:13px; padding:8px 16px; }
+  [data-theme="dark"] .bar { background:#0c0b0a; color:#d9cfc4; border-bottom:1px solid var(--line); }
+  header { border-bottom:1px solid var(--line); background:var(--bg); position:sticky; top:0; z-index:20; }
+  header .wrap { height:64px; display:flex; align-items:center; justify-content:space-between; }
+  header img { height:36px; width:auto; }
+  [data-theme="dark"] header img { filter:invert(1) brightness(1.6); mix-blend-mode:screen; }
+  nav { display:flex; gap:26px; align-items:center; font-size:15px; }
+  nav a { text-decoration:none; color:var(--muted); } nav a:hover { color:var(--ink); }
+  .theme { background:none; border:1px solid var(--line); border-radius:999px; width:38px; height:38px; display:grid; place-items:center; cursor:pointer; color:var(--ink); margin-left:-6px; }
 
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-  section.wrap { padding: 56px 24px; }
-  section + section { border-top: 1px solid var(--line); }
-  h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.08; margin: 0 0 18px; font-weight: 700; letter-spacing: -.02em; }
-  h2 { font-size: clamp(24px, 3.4vw, 32px); line-height: 1.15; margin: 0 0 18px; font-weight: 700; letter-spacing: -.01em; }
-  h3 { font-size: 16px; margin: 0 0 4px; }
-  p { margin: 0 0 14px; }
-  .muted { color: var(--muted); }
-  .small { font-size: 14px; }
+  /* product: gallery left, buy box right */
+  .product { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr); gap:56px; padding-top:36px; padding-bottom:64px; align-items:start; }
+  .gallery { position:sticky; top:90px; }
+  .track { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; border-radius:8px; background:#f0f0f0; }
+  [data-theme="dark"] .track { border-radius:12px; background:#e9e9e9; }
+  .track::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 100%; scroll-snap-align:start; aspect-ratio:4/5; position:relative; overflow:hidden; background:#f0f0f0; }
+  .slide > img, .slide > video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .slide > video { object-fit:contain; background:#000; }
+  .nav-row { display:flex; gap:8px; margin-top:10px; }
+  .thumb { width:68px; height:68px; border-radius:6px; overflow:hidden; border:1.5px solid transparent; padding:0; background:var(--soft); cursor:pointer; position:relative; }
+  .thumb img { width:100%; height:100%; object-fit:cover; }
+  .thumb.on { border-color:var(--acc); }
+  .thumb .play { position:absolute; inset:0; display:grid; place-items:center; background:rgba(0,0,0,.25); }
+  .arrows { position:absolute; top:calc(50% - 20px); left:0; right:0; display:flex; justify-content:space-between; padding:0 12px; pointer-events:none; }
+  .arrows button { pointer-events:auto; width:40px; height:40px; border-radius:50%; border:0; background:rgba(255,255,255,.92); color:#111; box-shadow:0 1px 4px rgba(0,0,0,.15); font-size:18px; cursor:pointer; }
 
-  .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-  .lead { font-size: 18px; color: #333; max-width: 520px; }
-  .price { font-size: 22px; font-weight: 700; margin: 6px 0 4px; }
-  .price span { font-size: 15px; font-weight: 500; color: var(--muted); }
-  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
-  .btn {
-    display: inline-block; padding: 14px 24px; border-radius: var(--radius); font: inherit; font-weight: 600; font-size: 15px;
-    text-decoration: none; border: 1px solid #000; cursor: pointer; transition: background .15s, color .15s; text-align: center;
-  }
-  .btn-primary { background: #000; color: #fff; }
-  .btn-primary:hover { background: #333; border-color: #333; }
-  .btn-ghost { background: #fff; color: #000; }
-  .btn-ghost:hover { background: var(--soft); }
-  .btn[disabled] { background: #bbb; border-color: #bbb; cursor: not-allowed; }
+  h1 { font-size:34px; line-height:1.12; letter-spacing:-.02em; margin:0 0 8px; font-weight:700; }
+  .price { font-size:22px; font-weight:600; margin:0; color:var(--acc); }
+  .price span { font-size:15px; color:var(--muted); font-weight:400; }
+  .intro { color:var(--ink); opacity:.85; margin:14px 0 22px; }
+  .field { margin:0 0 22px; }
+  .flabel { display:flex; justify-content:space-between; align-items:baseline; font-weight:600; font-size:15px; margin-bottom:8px; gap:10px; }
+  .flabel a, .flabel small { font-weight:400; font-size:13px; color:var(--muted); }
+  select, input[type=text], input[type=number], textarea { width:100%; font:15px Archivo, sans-serif; padding:12px 14px; border:1px solid var(--fieldline); border-radius:6px; background-color:var(--field); color:var(--ink); }
+  textarea { min-height:70px; resize:vertical; }
+  select { appearance:none; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23888' stroke-width='1.6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:36px; }
+  input:focus, select:focus, textarea:focus { outline:2px solid var(--acc); outline-offset:1px; }
+  .custom-id { margin-top:8px; }
 
-  .gallery > img { width: 100%; height: 560px; object-fit: contain; border-radius: var(--radius); background: #f2f2f2; }
-  .thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
-  .thumbs button { padding: 0; border: 2px solid transparent; border-radius: var(--radius); background: var(--soft); cursor: pointer; overflow: hidden; aspect-ratio: 1; }
-  .thumbs button[aria-current="true"] { border-color: #000; }
-  .thumbs img { width: 100%; height: 100%; object-fit: cover; }
+  .line + .line { border-top:1px dashed var(--line); padding-top:16px; margin-top:16px; }
+  .counts { display:grid; gap:8px; margin-top:12px; }
+  .count { display:flex; justify-content:space-between; align-items:center; font-size:15px; }
+  .count small { color:var(--muted); }
+  .stepper { display:flex; align-items:center; border:1px solid var(--fieldline); border-radius:6px; }
+  .stepper button { width:38px; height:38px; border:0; background:none; font-size:18px; cursor:pointer; color:var(--ink); }
+  .stepper output { width:28px; text-align:center; font-weight:600; }
+  .remove { background:none; border:0; color:var(--muted); font:13px Archivo; text-decoration:underline; cursor:pointer; padding:0; }
+  .linkbtn { background:none; border:0; padding:0; font:inherit; font-size:14px; text-decoration:underline; color:var(--acc); cursor:pointer; text-align:left; }
+  .fit { font-size:13px; margin:12px 0 0; }
+  .fit.ok { color:var(--ok); } .fit.warn { color:var(--warn); }
+  .tip { font-size:13px; color:var(--muted); margin:4px 0 0; }
+  .helpers { display:flex; flex-wrap:wrap; gap:6px 18px; margin-top:10px; }
 
-  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 22px; margin-top: 8px; }
-  .feature { padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); }
-  .feature p { margin: 0; font-size: 15px; color: #333; }
+  .stack { display:grid; grid-template-columns:96px 1fr; gap:18px; border:1px solid var(--line); border-radius:8px; padding:16px; margin-top:14px; background:var(--bg); }
+  [data-theme="dark"] .stack { background:var(--soft); }
+  .measure { font-size:14px; }
+  .gap { display:flex; align-items:center; gap:8px; margin:6px 0 4px; }
+  .gap input { width:96px; -moz-appearance:textfield; }
+  .gap input::-webkit-outer-spin-button, .gap input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+  .gap span { color:var(--muted); font-size:14px; }
+  .howto { font-size:13px; color:var(--muted); padding-left:18px; margin:8px 0 0; } .howto li { margin:4px 0; }
 
-  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
-  .video { width: 100%; max-width: 320px; margin: 0 auto; border-radius: var(--radius); background: #000; }
+  .sum { border-top:1px solid var(--line); padding-top:16px; }
+  .sum dl { display:grid; grid-template-columns:1fr auto; gap:6px 12px; margin:0 0 12px; font-size:15px; }
+  .sum dd { margin:0; text-align:right; }
+  .sum .tot { font-size:20px; font-weight:700; }
+  .msg { font-size:14px; color:var(--warn); margin:0 0 10px; min-height:1.2em; }
+  .hint { font-size:14px; color:var(--acc); margin:0 0 10px; }
+  #pp-buttons { min-height:50px; }
+  .small { font-size:13px; color:var(--muted); }
+  .alt { text-align:center; margin:12px 0 0; }
+  .done { border:1px solid var(--line); background:var(--soft); border-radius:8px; padding:16px; font-size:15px; }
+  #mail-form { margin-top:16px; border-top:1px solid var(--line); padding-top:16px; display:grid; gap:8px; }
+  .btn { display:block; width:100%; text-align:center; border-radius:6px; padding:13px 16px; font:600 15px Archivo; cursor:pointer; border:1px solid var(--ink); }
+  .btn-main { background:var(--ink); color:var(--bg); }
+  .btn-ghost { background:none; color:var(--ink); }
+  .btn[disabled] { opacity:.4; cursor:not-allowed; }
+  .facts { list-style:none; padding:0; margin:22px 0 0; border-top:1px solid var(--line); font-size:14px; }
+  .facts li { display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid var(--line); }
+  .facts li span:first-child { color:var(--muted); }
 
-  table { width: 100%; border-collapse: collapse; font-size: 15px; }
-  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); }
-  th { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
-  .note-box { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; background: var(--cream); font-size: 15px; color: #333; }
-  .note-box strong { color: #000; }
+  section.block { padding:64px 0; border-top:1px solid var(--line); }
+  [data-theme="dark"] section.block:nth-of-type(odd) { background:#1a1816; }
+  h2 { font-size:28px; letter-spacing:-.015em; line-height:1.15; margin:0 0 14px; }
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:56px; }
+  .lead { font-size:18px; max-width:560px; opacity:.85; }
+  .why { display:grid; grid-template-columns:repeat(2, 1fr); gap:28px 40px; }
+  .why h3 { font-size:17px; margin:0 0 4px; }
+  .why p { margin:0; opacity:.8; }
+  table { width:100%; border-collapse:collapse; font-size:15px; }
+  th, td { text-align:left; padding:10px 0; border-bottom:1px solid var(--line); }
+  th { font-weight:600; color:var(--muted); font-size:13px; }
+  .warnline { background:var(--soft); border-radius:8px; padding:14px 16px; font-size:15px; margin-top:18px; }
+  details.q { border-bottom:1px solid var(--line); padding:16px 0; }
+  details.q summary { cursor:pointer; font-weight:600; list-style:none; display:flex; justify-content:space-between; gap:12px; }
+  details.q summary::-webkit-details-marker { display:none; }
+  details.q summary::after { content:"+"; color:var(--muted); }
+  details.q[open] summary::after { content:"−"; }
+  details.q p { margin:8px 0 0; opacity:.8; }
+  footer { border-top:1px solid var(--line); padding:32px 0; font-size:14px; color:var(--muted); }
+  footer .wrap { display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  footer a { text-decoration:none; } footer a:hover { text-decoration:underline; }
 
-  /* Order builder */
-  .order { display: grid; grid-template-columns: 1.2fr .8fr; gap: 40px; align-items: start; }
-  .rows { border-top: 1px solid var(--line); }
-  .row { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
-  .row .size { font-weight: 600; }
-  .row .size small { display: block; font-weight: 400; color: var(--muted); font-size: 13px; }
-  .stepper { display: flex; align-items: center; border: 1px solid #ccc; border-radius: var(--radius); overflow: hidden; }
-  .stepper .lbl { font-size: 12px; color: var(--muted); padding: 0 8px; min-width: 46px; text-align: center; }
-  .stepper button { width: 36px; height: 38px; border: 0; background: #fff; font-size: 18px; cursor: pointer; color: #000; }
-  .stepper button:hover { background: var(--soft); }
-  .stepper output { width: 26px; text-align: center; font-weight: 600; }
-  .row.custom { grid-template-columns: 1fr; }
-  .row.custom .line { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; }
-  label.field { display: block; font-size: 14px; font-weight: 600; margin: 16px 0 6px; }
-  input[type=text], textarea, select {
-    width: 100%; font: inherit; font-size: 15px; padding: 11px 12px; border: 1px solid #ccc; border-radius: var(--radius); background: #fff; color: var(--text);
-  }
-  textarea { min-height: 76px; resize: vertical; }
-  #ship-street, #ship-city, #country { margin-top: 8px; }
-  .summary { position: sticky; top: 20px; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; background: #fff; }
-  .summary dl { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 0 0 14px; font-size: 15px; }
-  .summary dd { margin: 0; text-align: right; font-weight: 600; }
-  .summary .total { font-size: 20px; font-weight: 700; border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px; }
-  .summary .btn { width: 100%; margin-top: 10px; }
-  #pp-box { margin-top: 12px; }
-  #pp-box .muted { margin: 6px 0 0; text-align: center; }
-  .or { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; margin: 16px 0 4px; }
-  .or::before, .or::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
-  .warn { color: #a3470f; font-size: 14px; min-height: 1.4em; margin: 8px 0 0; }
-  .steps { margin: 18px 0 0; padding-left: 20px; font-size: 14px; color: #333; }
-  .steps li { margin-bottom: 6px; }
-
-  footer { padding: 28px 24px; text-align: center; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
-  footer a { text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
-
-  @media (max-width: 860px) {
-    section.wrap { padding: 40px 24px; }
-    .hero, .two, .order { grid-template-columns: 1fr; gap: 30px; }
-    .hero .gallery { order: 2; }
-    .gallery > img { height: 380px; }
-    header img { height: 46px; }
-    .summary { position: static; }
-  }
-  @media (max-width: 420px) {
-    section.wrap { padding-left: 16px; padding-right: 16px; }
-    .row { grid-template-columns: 1fr 1fr; }
-    .row .size { grid-column: 1 / -1; }
-    .row.custom .line { grid-template-columns: 1fr 1fr; }
-    .row.custom .line input { grid-column: 1 / -1; }
-    .stepper { justify-content: space-between; }
+  .sticky { display:none; }
+  @media (max-width: 900px) {
+    .wrap { padding:0 16px; }
+    header { position:static; }
+    nav { gap:16px; }
+    nav a:not([href="#buy"]) { display:none; }
+    .theme { margin-left:0; }
+    .product { grid-template-columns:1fr; gap:22px; padding-top:0; }
+    .product > .gallery { margin:0 -16px; position:static; }
+    .track, [data-theme="dark"] .track { border-radius:0; }
+    .nav-row { padding:0 16px; }
+    .arrows { display:none; }
+    h1 { font-size:27px; }
+    .cols, .why { grid-template-columns:1fr; gap:24px; }
+    section.block { padding:44px 0; }
+    .sticky.show { display:flex; position:fixed; left:0; right:0; bottom:0; z-index:30; background:var(--bg); border-top:1px solid var(--line); padding:10px 16px calc(10px + env(safe-area-inset-bottom)); justify-content:space-between; align-items:center; box-shadow:0 -6px 20px rgba(0,0,0,.08); }
+    .sticky b { font-size:17px; } .sticky small { display:block; color:var(--muted); font-size:12px; }
+    .sticky a { background:var(--acc); color:var(--acc-text); text-decoration:none; border-radius:6px; padding:12px 20px; font-weight:600; }
   }
 </style>
 </head>
 <body>
-  <div class="announcement">Order online, pay with PayPal or card. Shipped from Switzerland with tracking.</div>
+<div class="bar">Pay by PayPal or card · Tracked shipping · Made to order in Switzerland</div>
+<header><div class="wrap">
+  <a href="/"><img src="/assets/logo.png" alt="PEMods" width="400" height="216"></a>
+  <nav>
+    <a href="#about">About</a><a href="#sizes">Sizes</a><a href="#faq">FAQ</a><a href="#buy">Order</a>
+    <button class="theme" id="theme" type="button" aria-label="Switch between light and dark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+  </nav>
+</div></header>
 
-  <header>
-    <a href="/"><img src="/assets/logo.png" alt="PEMods" width="400" height="216"></a>
-    <nav>
-      <a href="#order">Order</a>
-      <a href="#sizing">Sizing</a>
-      <a href="mailto:pemods@proton.me">Contact</a>
-      <a href="https://www.reddit.com/r/TheScienceOfPE/comments/1uhs09g/magnetic_displacement_pucks_now_available_fully/" target="_blank" rel="noopener">Reddit</a>
-    </nav>
-  </header>
-
-  <main>
-    <section class="wrap">
-      <div class="hero">
-        <div class="gallery">
-          <img id="main-img" src="/assets/stack.jpg" alt="A stack of PEMods pucks inside a cylinder" width="900" height="1125">
-          <div class="thumbs">
-            <button type="button" aria-current="true" data-src="/assets/stack.jpg" data-alt="A stack of PEMods pucks inside a cylinder"><img src="/assets/stack.jpg" alt="" loading="lazy"></button>
-            <button type="button" data-src="/assets/sizes.jpg" data-alt="Pucks in all six sizes"><img src="/assets/sizes.jpg" alt="" loading="lazy"></button>
-            <button type="button" data-src="/assets/heights.jpg" data-alt="10 mm and 25 mm puck"><img src="/assets/heights.jpg" alt="" loading="lazy"></button>
-          </div>
-        </div>
-        <div>
-          <h1>Magnetic Air Displacement Puck</h1>
-          <p class="lead">Fills the unused air space in your cylinder. Less air to move means faster pressure changes, which you notice most with Milking and RIP and with larger cylinders.</p>
-          <p class="price">&euro;9.90 <span>per puck</span></p>
-          <p class="muted small">&euro;8.90 per puck from 6 pucks. Minimum order 3 pucks. Shipping is calculated by weight in the order form.</p>
-          <div class="actions">
-            <a class="btn btn-primary" href="#order">Build your order</a>
-            <a class="btn btn-ghost" href="#sizing">Find your size</a>
-          </div>
-        </div>
+<main>
+<div class="wrap product">
+  <div class="gallery">
+    <div style="position:relative">
+      <div class="track" id="track">
+        <div class="slide"><img src="/assets/stack.jpg" alt="A stack of PEMods pucks inside a cylinder" width="900" height="1125"></div>
+        <div class="slide"><video src="/assets/puck-video.mp4" poster="/assets/video-poster.jpg" controls muted playsinline preload="none"></video></div>
+        <div class="slide"><img src="/assets/sizes.jpg" alt="Pucks in all six sizes" loading="lazy"></div>
+        <div class="slide"><img src="/assets/heights.jpg" alt="10 mm and 25 mm puck" loading="lazy"></div>
       </div>
-    </section>
+      <div class="arrows"><button id="prev" type="button" aria-label="Previous picture">‹</button><button id="next" type="button" aria-label="Next picture">›</button></div>
+    </div>
+    <div class="nav-row">
+      <button class="thumb on" type="button" aria-label="Picture 1"><img src="/assets/stack.jpg" alt=""></button>
+      <button class="thumb" type="button" aria-label="Video"><img src="/assets/video-poster.jpg" alt=""><span class="play"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span></button>
+      <button class="thumb" type="button" aria-label="Picture 3"><img src="/assets/sizes.jpg" alt=""></button>
+      <button class="thumb" type="button" aria-label="Picture 4"><img src="/assets/heights.jpg" alt=""></button>
+    </div>
+  </div>
 
-    <section class="wrap">
-      <h2>Why this one is different</h2>
-      <p class="muted">Inspired by Karl's <a href="https://www.reddit.com/r/TheScienceOfPE/comments/1maiurv/i_made_a_thing_karls_displacement_puck_making/" target="_blank" rel="noopener">original displacement puck concept</a>, the PEMods Puck takes the idea further with a fully modular, magnetic system.</p>
-      <div class="features">
-        <div class="feature"><h3>Magnetic, no O-rings</h3><p>Embedded neodymium magnets hold the stack together. A central air channel keeps air flowing, nothing seals.</p></div>
-        <div class="feature"><h3>Foolproof stacking</h3><p>The magnet layout only lets the pucks stack the right way. No special top piece needed.</p></div>
-        <div class="feature"><h3>Easy to remove</h3><p>Two magnets on top of the cylinder hold the stack. Take them off and the stack drops right out. No rod, no hook.</p></div>
-        <div class="feature"><h3>Easy to clean</h3><p>Nothing traps fluid or wears out. Pull the stack apart, rinse, done.</p></div>
-        <div class="feature"><h3>Labeled</h3><p>Black PLA with the size printed in white, so you always know what you've got.</p></div>
+  <div id="buy">
+    <h1>Magnetic Air Displacement Puck</h1>
+    <p class="price">€9.90 <span>per puck · €8.90 from 6 pucks · minimum 3</span></p>
+    <p class="intro">Fills the unused air space above your glans in the cylinder. Less air to move means faster pressure transitions, most noticeable with Milking and RIP and in larger cylinders.</p>
+
+    <div class="field">
+      <div class="flabel">Cylinder size and pucks <a href="#sizes">Size chart</a></div>
+      <div id="lines"></div>
+      <p class="fit" id="fit"></p>
+      <p class="tip" id="tip" hidden>We recommend at least one 10 mm puck, so you can fine-tune the height.</p>
+      <div class="helpers">
+        <button class="linkbtn" id="helpbtn" type="button">Not sure how many you need? Measure and we work it out</button>
+        <button class="linkbtn" id="addline" type="button">+ Second cylinder size</button>
       </div>
-    </section>
-
-    <section class="wrap">
-      <div class="two">
+      <div class="stack" id="helper" hidden>
+        <svg id="viz" viewBox="0 0 110 250" width="96" height="218" aria-hidden="true"></svg>
         <div>
-          <h2>How many pucks do I need?</h2>
-          <p>Measure the empty space above your glans at working length. That's the dead volume you want to fill.</p>
-          <p>Stack pucks to take up most of it, but leave around 1 cm (0.4") at the top so you're not pressing against the stack.</p>
-          <p>Combine 25 mm and 10 mm pucks to fine-tune the height, and include at least one 10 mm puck so you can adjust in small steps.</p>
-          <p class="muted small">See our <a href="https://www.reddit.com/r/TheScienceOfPE/comments/1uhs09g/magnetic_displacement_pucks_now_available_fully/" target="_blank" rel="noopener">Reddit post</a> for a sizing walkthrough.</p>
-        </div>
-        <video class="video" src="/assets/puck-video.mp4" poster="/assets/video-poster.jpg" controls muted playsinline preload="none" width="540" height="960"></video>
-      </div>
-    </section>
-
-    <section class="wrap" id="sizing">
-      <h2>Compatibility &amp; sizing</h2>
-      <p class="muted"><strong>Please measure your cylinder's inner diameter before ordering.</strong></p>
-      <table>
-        <thead><tr><th>Cylinder</th><th>Inner diameter</th><th>Puck diameter</th></tr></thead>
-        <tbody>
-          <tr><td>2.50"</td><td>61.2 mm</td><td>60.5 mm</td></tr>
-          <tr><td>2.24"</td><td>54.9 mm</td><td>54.2 mm</td></tr>
-          <tr><td>2.125"</td><td>52.0 mm</td><td>51.3 mm</td></tr>
-          <tr><td>2.00"</td><td>49.0 mm</td><td>48.3 mm</td></tr>
-          <tr><td>1.85"</td><td>45.3 mm</td><td>44.6 mm</td></tr>
-          <tr><td>1.73"</td><td>42.4 mm</td><td>41.7 mm</td></tr>
-        </tbody>
-      </table>
-      <p class="muted small" style="margin-top:14px">Valve opening: 10.0 mm on all sizes. Every manufacturer uses different tolerances, so these are reference measurements and fit is not guaranteed. Flange design and inner shape can differ between cylinders of the same nominal size. Pucks may vary by &plusmn;0.5 mm.</p>
-      <div class="note-box"><strong>Size not listed?</strong> We make custom pucks for your cylinder. Just send us its inner diameter in the order below. Custom orders are made to your measurements and can't be returned.</div>
-    </section>
-
-    <section class="wrap" id="order">
-      <h2>Build your order</h2>
-      <p class="muted">Pick sizes and heights, choose your country and pay with PayPal or card. Prefer email? Send the order instead and we reply with a PayPal invoice.</p>
-      <div class="order">
-        <div>
-          <div class="rows" id="rows"></div>
-          <div class="row custom">
-            <div class="size">Custom size <small>Enter your cylinder's inner diameter</small></div>
-            <div class="line">
-              <input type="text" id="custom-id" placeholder="Inner diameter, e.g. 57.2 mm" autocomplete="off">
-              <div class="stepper" data-key="custom|10"><span class="lbl">10 mm</span><button type="button" data-d="-1" aria-label="Fewer">&minus;</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button></div>
-              <div class="stepper" data-key="custom|25"><span class="lbl">25 mm</span><button type="button" data-d="-1" aria-label="Fewer">&minus;</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button></div>
-            </div>
-          </div>
-          <label class="field" for="ship-name">Shipping address</label>
-          <input type="text" id="ship-name" placeholder="Full name" autocomplete="shipping name">
-          <input type="text" id="ship-street" placeholder="Street and number" autocomplete="shipping street-address">
-          <input type="text" id="ship-city" placeholder="ZIP and city" autocomplete="shipping address-level2">
-          <select id="country" autocomplete="shipping country-name"><option value="">Country</option></select>
-          <label class="field" for="notes">Anything else? (optional)</label>
-          <textarea id="notes" placeholder="Questions, cylinder brand, ..."></textarea>
-        </div>
-        <aside class="summary" aria-live="polite">
-          <dl>
-            <dt>Pucks</dt><dd id="s-qty">0</dd>
-            <dt>Price per puck</dt><dd id="s-each">&euro;9.90</dd>
-            <dt>Pucks subtotal</dt><dd id="s-sub">&euro;0.00</dd>
-            <dt>Shipping with tracking</dt><dd id="s-ship">choose country</dd>
-            <dt class="total">Total</dt><dd class="total" id="s-total">&euro;0.00</dd>
-          </dl>
-          <p class="muted small" style="margin:0" id="s-note">Outside Switzerland, customs may charge import VAT on delivery.</p>
-          <p class="warn" id="s-warn"></p>
-          <div id="pp-box" hidden>
-            <div id="pp-buttons"></div>
-            <p class="muted small" id="pp-info">Pay now with PayPal or card. Your shipping address is taken from PayPal.</p>
-          </div>
-          <div class="note-box" id="pp-done" hidden></div>
-          <p class="or" id="pp-or" hidden>or order by email</p>
-          <button class="btn btn-primary" id="send" type="button" disabled>Send order by email</button>
-          <button class="btn btn-ghost" id="copy" type="button" disabled>Copy order text</button>
-          <ol class="steps">
-            <li>Your email app opens with the order and address filled in. Check it and send.</li>
-            <li>We reply with the total and a PayPal invoice.</li>
-            <li>Once paid, your pucks are made and shipped with tracking.</li>
+          <label class="measure" for="gap">Empty space above your glans at working length:</label>
+          <div class="gap"><input type="number" id="gap" inputmode="numeric" min="20" max="200" placeholder="e.g. 70"><span>mm</span></div>
+          <ol class="howto">
+            <li>Pump to your normal working length.</li>
+            <li>On the cylinder scale, read where your glans ends and where the cylinder ends at the top.</li>
+            <li>Enter the difference. We fill it and leave about 1 cm free, with at least one 10 mm puck for fine-tuning.</li>
           </ol>
-          <p class="muted small">No email app? Copy the order text and send it to <a href="mailto:pemods@proton.me">pemods@proton.me</a>.</p>
-        </aside>
+        </div>
       </div>
-    </section>
+    </div>
 
-    <section class="wrap">
-      <h2>Shipping</h2>
-      <p>We ship from Switzerland to Switzerland, Europe, Canada and Australia. Other countries on request. Every order ships with tracking.</p>
-      <p>Outside Switzerland, your local customs may charge import VAT and a small handling fee on delivery. In the EU this applies to every order, whatever the value. These are paid by the recipient and are not part of our price.</p>
-      <p class="muted small">Questions about sizing, custom pucks or shipping? Write to <a href="mailto:pemods@proton.me">pemods@proton.me</a>.</p>
-    </section>
-  </main>
+    <div class="field">
+      <label class="flabel" for="country">Ship to</label>
+      <select id="country" autocomplete="shipping country-name"><option value="">Choose country</option></select>
+    </div>
 
-  <footer>&copy; <span id="y"></span> PEMods &middot; Made in Switzerland &middot; <a href="mailto:pemods@proton.me">pemods@proton.me</a></footer>
+    <div class="sum">
+      <dl>
+        <dt id="s-q">0 pucks</dt><dd id="s-sub">€0.00</dd>
+        <dt>Shipping with tracking</dt><dd id="s-ship">choose country</dd>
+        <dt class="tot">Total</dt><dd class="tot" id="s-tot">€0.00</dd>
+      </dl>
+      <p class="small" id="s-note" style="margin:0 0 10px">Outside Switzerland, customs may charge import VAT on delivery.</p>
+      <p class="hint" id="hint" hidden></p>
+      <p class="msg" id="msg"></p>
+      <div id="pp-box" hidden><div id="pp-buttons"></div></div>
+      <div class="done" id="pp-done" hidden></div>
+      <p class="small alt" id="mail-link">Prefer email? <button class="linkbtn" id="mail-open" type="button" style="font-size:13px">Send the order by email</button> and we reply with a PayPal invoice.</p>
+      <div id="mail-form" hidden>
+        <input type="text" id="ship-name" placeholder="Full name" autocomplete="shipping name">
+        <input type="text" id="ship-street" placeholder="Street and number" autocomplete="shipping street-address">
+        <input type="text" id="ship-city" placeholder="ZIP and city" autocomplete="shipping address-level2">
+        <textarea id="notes" placeholder="Anything else? Questions, cylinder brand, ... (optional)"></textarea>
+        <button class="btn btn-main" id="send" type="button" disabled>Send order by email</button>
+        <button class="btn btn-ghost" id="copy" type="button" disabled>Copy order text</button>
+        <p class="small" style="margin:0">Your email app opens with the order filled in. We reply with the total and a PayPal invoice. No email app? Copy the text and send it to <a href="mailto:pemods@proton.me">pemods@proton.me</a>.</p>
+      </div>
+    </div>
+
+    <ul class="facts">
+      <li><span>Material</span><span>Black PLA, size marked in white</span></li>
+      <li><span>Magnets</span><span>Neodymium, embedded</span></li>
+      <li><span>Heights</span><span>10 mm and 25 mm</span></li>
+      <li><span>Tolerance</span><span>±0.5 mm</span></li>
+      <li><span>Ships</span><span>Built to order, a few days</span></li>
+    </ul>
+  </div>
+</div>
+
+<section class="block" id="about"><div class="wrap cols">
+  <div>
+    <h2>What a displacement puck does</h2>
+    <p class="lead">It fills the dead air above your glans. The less empty volume in the cylinder, the less air the pump has to move, so you reach your target vacuum faster.</p>
+    <p class="lead">You feel it most with Milking and RIP, with a manual pump or a slower electric one, and in larger cylinders with a lot of dead space. <a href="https://www.reddit.com/r/TheScienceOfPE/comments/1maiurv/i_made_a_thing_karls_displacement_puck_making/" target="_blank" rel="noopener">Karl's original concept</a> reported 50 to 60% shorter transition times.</p>
+  </div>
+  <div class="why">
+    <div><h3>Magnetic, no O-rings</h3><p>Embedded magnets hold the stack together. A central air channel keeps air flowing, nothing seals.</p></div>
+    <div><h3>Fully modular</h3><p>No special top piece. The magnets only let the pucks stack the right way round.</p></div>
+    <div><h3>Easy to remove</h3><p>Two magnets on top of the cylinder hold the stack. Take them off and it drops right out. No rod, no hook.</p></div>
+    <div><h3>Easy to clean</h3><p>Nothing traps fluid or wears out. Pull apart, rinse, done.</p></div>
+  </div>
+</div></section>
+
+<section class="block" id="sizes"><div class="wrap cols">
+  <div>
+    <h2>Sizes</h2>
+    <p class="lead">Six diameters, each as a 10 mm or 25 mm puck.</p>
+    <div class="warnline"><strong>Measure your cylinder before ordering.</strong> Tolerances vary a lot between manufacturers, so check the actual inner diameter. Not listed? Choose "Other size" and we make it for your cylinder.</div>
+  </div>
+  <div>
+    <table>
+      <thead><tr><th>Cylinder</th><th>Inner diameter</th><th>Puck</th></tr></thead>
+      <tbody>
+        <tr><td>2.50"</td><td>61.2 mm</td><td>60.5 mm</td></tr>
+        <tr><td>2.24"</td><td>54.9 mm</td><td>54.2 mm</td></tr>
+        <tr><td>2.125"</td><td>52.0 mm</td><td>51.3 mm</td></tr>
+        <tr><td>2.00"</td><td>49.0 mm</td><td>48.3 mm</td></tr>
+        <tr><td>1.85"</td><td>45.3 mm</td><td>44.6 mm</td></tr>
+        <tr><td>1.73"</td><td>42.4 mm</td><td>41.7 mm</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin:14px 0 0">Valve opening: 10.0 mm on all sizes. Every manufacturer uses different tolerances, so these are reference measurements and fit is not guaranteed. Flange design and inner shape can differ between cylinders of the same nominal size. Pucks may vary by ±0.5 mm.</p>
+  </div>
+</div></section>
+
+<section class="block" id="faq"><div class="wrap cols">
+  <div><h2>Questions</h2><p class="lead">Anything else? Write to <a href="mailto:pemods@proton.me">pemods@proton.me</a>.</p></div>
+  <div>
+    <details class="q"><summary>When does my order ship?</summary><p>Each set is built to order by hand, so allow a few days before it ships. Every parcel has tracking.</p></details>
+    <details class="q"><summary>Where do you ship?</summary><p>From Switzerland to Switzerland, Europe, Canada and Australia. Other countries on request by email.</p></details>
+    <details class="q"><summary>Will I pay customs?</summary><p>Outside Switzerland, your local customs may charge import VAT and a small handling fee on delivery. These are paid by the recipient and are not part of our price.</p></details>
+    <details class="q"><summary>How many pucks do I need?</summary><p>Fill most of the empty space above your glans and leave about 1 cm at the top. Include at least one 10 mm puck so you can adjust in small steps. The measuring tool above does the math.</p></details>
+    <details class="q"><summary>Can I return custom sizes?</summary><p>No, custom pucks are made to your measurement and can't be returned.</p></details>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <span>© <span id="y"></span> PEMods · Made in Switzerland · Thanks to Karl for the original idea</span>
+  <span><a href="https://www.reddit.com/r/TheScienceOfPE/comments/1uhs09g/magnetic_displacement_pucks_now_available_fully/" target="_blank" rel="noopener">Reddit</a> · <a href="mailto:pemods@proton.me">pemods@proton.me</a></span>
+</div></footer>
+<div class="sticky" id="sticky"><div><b id="st-tot">€0.00</b><small id="st-q">0 pucks</small></div><a href="#buy">Checkout</a></div>
 
 <script id="pp-sdk" src="https://www.paypal.com/sdk/js?client-id=BAA1SQattdPMvdaOLQsI6Tx8OGjk0RHJYLfjbpM9xn0mx0618dm-DiBx9i_KtzHWWB_wc1Bc9DkwW487W8&currency=EUR&intent=capture&disable-funding=paylater,venmo"></script>
 <script>
 (() => {
-  const SIZES = [
-    ['2.50', '60.5 mm'], ['2.24', '54.2 mm'], ['2.125', '51.3 mm'],
-    ['2.00', '48.3 mm'], ['1.85', '44.6 mm'], ['1.73', '41.7 mm'],
-  ];
+  const SIZES = [['2.50', '61.2'], ['2.24', '54.9'], ['2.125', '52.0'], ['2.00', '49.0'], ['1.85', '45.3'], ['1.73', '42.4']];
   const MIN = 3, PRICE = 9.90, BULK = 8.90, BULK_FROM = 6, MAX = 30;
   // Shipping by weight: Swiss Post small goods international (CHF), price to customer in EUR rounded up to .90
-  const GRAMS = { 10: 40, 25: 40 }, PACKAGING = 0; // 40 g per puck covers box, bubble wrap and paper
+  const GRAMS = 40; // per puck, covers box, bubble wrap and paper
   const TIERS = [100, 250, 500, 1000, 1500, 2000];
   const RATES = { 1: [4.50, 9.50, 14.50, 20.50, 25.50, 30.50], 2: [7.50, 12.50, 17.50, 27.50, 32.50, 37.50] };
   const SHIP_CH = 7.50;
-  const ZONE1 = ['Albania', 'Andorra', 'Austria', 'Belgium', 'Bosnia and Herzegovina', 'Bulgaria', 'Croatia', 'Cyprus', 'Czech Republic',
-    'Denmark', 'Estonia', 'Faroe Islands', 'Finland', 'France', 'Germany', 'Gibraltar', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Italy',
-    'Kosovo', 'Latvia', 'Lithuania', 'Luxembourg', 'Malta', 'Moldova', 'Monaco', 'Montenegro', 'Netherlands', 'North Macedonia', 'Norway',
-    'Poland', 'Portugal', 'Romania', 'San Marino', 'Serbia', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Turkey', 'Ukraine', 'United Kingdom'];
-  const ZONE2 = ['Australia', 'Canada'];
-  const OTHER = 'Other country (shipping quoted by email)';
-  const zoneOf = c => c === 'Switzerland' || c === 'Liechtenstein' ? 0 : ZONE1.includes(c) ? 1 : ZONE2.includes(c) ? 2 : null;
-  const toEur = chf => Math.ceil(chf + 0.4) - 0.10;
-  const MAIL = 'pemods@proton.me';
-  // PayPal checkout runs when the SDK tag (id pp-sdk, before this script) is on the page; without it: email ordering only.
-  const PAYPAL_ON = !!(window.paypal && window.paypal.Buttons);
   const ISO = { Switzerland: 'CH', Liechtenstein: 'LI', Albania: 'AL', Andorra: 'AD', Austria: 'AT', Belgium: 'BE', 'Bosnia and Herzegovina': 'BA',
     Bulgaria: 'BG', Croatia: 'HR', Cyprus: 'CY', 'Czech Republic': 'CZ', Denmark: 'DK', Estonia: 'EE', 'Faroe Islands': 'FO', Finland: 'FI',
     France: 'FR', Germany: 'DE', Gibraltar: 'GI', Greece: 'GR', Hungary: 'HU', Iceland: 'IS', Ireland: 'IE', Italy: 'IT', Kosovo: 'XK',
     Latvia: 'LV', Lithuania: 'LT', Luxembourg: 'LU', Malta: 'MT', Moldova: 'MD', Monaco: 'MC', Montenegro: 'ME', Netherlands: 'NL',
     'North Macedonia': 'MK', Norway: 'NO', Poland: 'PL', Portugal: 'PT', Romania: 'RO', 'San Marino': 'SM', Serbia: 'RS', Slovakia: 'SK',
     Slovenia: 'SI', Spain: 'ES', Sweden: 'SE', Turkey: 'TR', Ukraine: 'UA', 'United Kingdom': 'GB', Australia: 'AU', Canada: 'CA' };
-  const qty = {};
+  const ZONE0 = ['Switzerland', 'Liechtenstein'], ZONE2 = ['Australia', 'Canada'];
+  const ZONE1 = Object.keys(ISO).filter(c => !ZONE0.includes(c) && !ZONE2.includes(c));
+  const OTHER = 'Other country (shipping quoted by email)';
+  const MAIL = 'pemods@proton.me';
+  const $ = id => document.getElementById(id);
   const eur = n => '€' + n.toFixed(2);
+  const zoneOf = c => ZONE0.includes(c) ? 0 : ZONE1.includes(c) ? 1 : ZONE2.includes(c) ? 2 : null;
+  const toEur = chf => Math.ceil(chf + 0.4) - 0.10;
 
-  const sel = document.getElementById('country');
-  const opt = (v, t) => { const o = document.createElement('option'); o.value = v; o.textContent = t || v; return o; };
+  // country list
+  const sel = $('country');
+  const opt = v => { const o = document.createElement('option'); o.value = o.textContent = v; return o; };
   const grp = (label, list) => { const g = document.createElement('optgroup'); g.label = label; list.forEach(c => g.appendChild(opt(c))); sel.appendChild(g); };
-  grp('Switzerland', ['Switzerland', 'Liechtenstein']); grp('Europe', ZONE1); grp('Overseas', ZONE2);
-  sel.appendChild(opt(OTHER));
-  sel.addEventListener('change', update);
+  grp('Switzerland', ZONE0); grp('Europe', ZONE1); grp('Overseas', ZONE2); sel.appendChild(opt(OTHER));
 
-  const rows = document.getElementById('rows');
-  const stepper = key => `<div class="stepper" data-key="${key}"><span class="lbl">${key.split('|')[1]} mm</span><button type="button" data-d="-1" aria-label="Fewer">&minus;</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button></div>`;
-  rows.innerHTML = SIZES.map(([s, d]) =>
-    `<div class="row"><div class="size">${s}" cylinder<small>Puck ${d}</small></div>${stepper(s + '|10')}${stepper(s + '|25')}</div>`
-  ).join('');
-
-  document.querySelectorAll('.stepper').forEach(st => {
-    const key = st.dataset.key, out = st.querySelector('output');
-    qty[key] = 0;
-    st.addEventListener('click', e => {
+  // order lines: one per cylinder size
+  const lines = [];
+  const sizeOptions = '<option value="">Choose your cylinder</option>' + SIZES.map(([s, d]) => `<option value="${s}">${s}" (inner diameter ${d} mm)</option>`).join('') + '<option value="custom">Other size (custom made)</option>';
+  const stepper = h => `<div class="count"><span>${h} mm <small>tall</small></span><div class="stepper" data-h="${h}"><button type="button" data-d="-1" aria-label="Fewer ${h} mm pucks">−</button><output>0</output><button type="button" data-d="1" aria-label="More ${h} mm pucks">+</button></div></div>`;
+  function addLine(n25, n10) {
+    const line = { size: '', custom: '', n: { 25: n25, 10: n10 }, el: document.createElement('div') };
+    line.el.className = 'line';
+    line.el.innerHTML = `<select aria-label="Cylinder size">${sizeOptions}</select>
+      <div class="custom-id" hidden><input type="text" placeholder="Your cylinder's inner diameter, e.g. 57.2 mm"><p class="small" style="margin:6px 0 0">Custom pucks are made to your measurement and can't be returned.</p></div>
+      <div class="counts">${stepper(25)}${stepper(10)}</div>${lines.length ? '<button class="remove" type="button">Remove this size</button>' : ''}`;
+    const s = line.el.querySelector('select'), c = line.el.querySelector('.custom-id');
+    s.onchange = () => { line.size = s.value; c.hidden = s.value !== 'custom'; update(); };
+    c.querySelector('input').oninput = e => { line.custom = e.target.value.trim(); update(); };
+    line.el.querySelectorAll('.stepper').forEach(st => st.onclick = e => {
       const b = e.target.closest('button'); if (!b) return;
-      qty[key] = Math.max(0, Math.min(MAX, qty[key] + Number(b.dataset.d)));
-      out.textContent = qty[key];
-      update();
+      const h = st.dataset.h; line.n[h] = Math.max(0, Math.min(MAX, line.n[h] + Number(b.dataset.d))); update();
     });
-  });
-  ['custom-id', 'ship-name', 'ship-street', 'ship-city', 'country', 'notes'].forEach(id => document.getElementById(id).addEventListener('input', update));
-
-  function lines() {
-    const out = [];
-    for (const [key, n] of Object.entries(qty)) {
-      if (!n) continue;
-      const [size, h] = key.split('|');
-      const name = size === 'custom'
-        ? `Custom (inner diameter ${document.getElementById('custom-id').value.trim() || '?'})`
-        : `${size}" cylinder`;
-      out.push(`${n} x ${name}, ${h} mm`);
-    }
-    return out;
+    const rm = line.el.querySelector('.remove');
+    if (rm) rm.onclick = () => { lines.splice(lines.indexOf(line), 1); line.el.remove(); $('addline').hidden = false; update(); };
+    lines.push(line); $('lines').appendChild(line.el);
   }
+  addLine(2, 1);
+  $('addline').onclick = () => { addLine(0, 0); $('addline').hidden = lines.length >= 3; update(); };
+
+  // measuring helper (sets the first line)
+  $('helpbtn').onclick = () => { $('helper').hidden = !$('helper').hidden; if (!$('helper').hidden) $('gap').focus(); update(); };
+  $('gap').addEventListener('input', () => {
+    const g = +$('gap').value;
+    if (g >= 20) {
+      const target = g - 10; // leave about 1 cm
+      const a = Math.max(0, Math.floor((target - 10) / 25));
+      lines[0].n[25] = a; lines[0].n[10] = Math.max(1, Math.floor((target - a * 25) / 10));
+    }
+    update();
+  });
 
   function state() {
-    const total = Object.values(qty).reduce((a, b) => a + b, 0);
+    const total = lines.reduce((t, l) => t + l.n[25] + l.n[10], 0);
     const each = total >= BULK_FROM ? BULK : PRICE;
-    const customQty = qty['custom|10'] + qty['custom|25'];
-    let warn = '';
-    if (total > 0 && total < MIN) warn = `Minimum order is ${MIN} pucks.`;
-    else if (customQty && !document.getElementById('custom-id').value.trim()) warn = 'Please enter the inner diameter for your custom pucks.';
-    let grams = PACKAGING, heaviest = 0;
-    for (const [key, n] of Object.entries(qty)) { const g = GRAMS[key.split('|')[1]]; grams += n * g; if (n) heaviest = Math.max(heaviest, g); }
-    const zone = zoneOf(sel.value);
+    const zone = zoneOf(sel.value), grams = total * GRAMS;
     let ship = null, room = 0;
     if (zone === 0) ship = SHIP_CH;
     else if (zone) {
       const i = TIERS.findIndex(t => grams <= t);
-      if (i >= 0) { ship = toEur(RATES[zone][i]); room = Math.floor((TIERS[i] - grams) / (heaviest || GRAMS[10])); }
+      if (i >= 0) { ship = toEur(RATES[zone][i]); room = Math.floor((TIERS[i] - grams) / GRAMS); }
     }
-    if (!warn && total >= MIN && !sel.value) warn = 'Please choose your country.';
+    let warn = '';
+    const used = lines.filter(l => l.n[25] + l.n[10] > 0);
+    if (used.some(l => !l.size)) warn = 'Choose your cylinder size.';
+    else if (used.some(l => l.size === 'custom' && !l.custom)) warn = 'Enter the inner diameter for your custom pucks.';
+    else if (total < MIN) warn = `Minimum order is ${MIN} pucks.`;
+    else if (!sel.value) warn = 'Choose where we ship to.';
     const sum = total * each;
-    return { total, each, sum, ship, room, zone, grand: sum + (ship || 0), ok: total >= MIN && !warn, warn };
+    return { total, each, sum, ship, room, zone, grand: sum + (ship || 0), ok: !warn, warn };
   }
 
+  function name(l) { return l.size === 'custom' ? `Custom (inner diameter ${l.custom || '?'})` : `${l.size}" cylinder`; }
+  function orderLines() {
+    const out = [];
+    for (const l of lines) for (const h of [25, 10]) if (l.n[h]) out.push(`${l.n[h]} x ${name(l)}, ${h} mm`);
+    return out;
+  }
   function text() {
-    const s = state();
-    const val = id => document.getElementById(id).value.trim();
-    const country = sel.value;
-    const notes = document.getElementById('notes').value.trim();
+    const s = state(), val = id => $(id).value.trim(), notes = val('notes');
     return [
       'Hi PEMods,', '',
-      'MY ORDER', ...lines(), '',
+      'MY ORDER', ...orderLines(), '',
       `${s.total} pucks x ${eur(s.each)} = ${eur(s.sum)}`,
       s.ship !== null ? `Shipping with tracking: ${eur(s.ship)}` : 'Shipping: please quote',
       `Total: ${s.ship !== null ? eur(s.grand) : eur(s.sum) + ' plus shipping'}`, '',
-      'SHIP TO', `Name: ${val('ship-name')}`, `Street: ${val('ship-street')}`, `ZIP and city: ${val('ship-city')}`, `Country: ${country}`, '',
+      'SHIP TO', `Name: ${val('ship-name')}`, `Street: ${val('ship-street')}`, `ZIP and city: ${val('ship-city')}`, `Country: ${sel.value}`, '',
       ...(notes ? ['NOTES', notes, ''] : []),
       'Thanks!',
     ].join('\r\n');
   }
 
+  function drawStack() {
+    const l = lines[0], stackMm = l.n[25] * 25 + l.n[10] * 10, g = +$('gap').value || 0;
+    const T = 14, L = 220, X = 27, W = 52, gapMm = Math.min(200, g || stackMm + 10);
+    let s = `<defs><clipPath id="cyl"><rect x="${X}" y="${T}" width="${W}" height="${L}"/></clipPath></defs>`;
+    s += `<rect x="${X - 2}" y="${T}" width="${W + 4}" height="${L}" rx="3" fill="var(--cyl)" stroke="var(--cylline)" stroke-width="1.5"/>`;
+    s += `<rect x="${X + 14}" y="${T - 8}" width="${W - 28}" height="8" rx="2" fill="var(--cylline)"/>`;
+    s += `<rect x="${X - 10}" y="${T + L}" width="${W + 20}" height="7" rx="3" fill="var(--cylline)" opacity=".5"/>`;
+    s += `<rect x="${X + 6}" y="${T + gapMm}" width="${W - 12}" height="${L}" rx="${(W - 12) / 2}" fill="var(--skin)" opacity=".5" clip-path="url(#cyl)"/>`;
+    let y = T + 1;
+    for (const h of [25, 10]) for (let i = 0; i < l.n[h]; i++) { if (y + h > T + L) break; s += `<rect x="${X + 2}" y="${y}" width="${W - 4}" height="${h - 1.5}" rx="2" fill="var(--puck)" stroke="var(--cylline)" stroke-width=".5"/>`; y += h; }
+    const free = gapMm - stackMm;
+    if (g && free > 2) s += `<path d="M${X + W + 6} ${T + stackMm} h4 V${T + gapMm} h-4" fill="none" stroke="var(--cylline)"/><text x="${X + W + 13}" y="${T + stackMm + free / 2 + 3.5}" font-size="10" fill="var(--muted)">${free}</text>`;
+    $('viz').innerHTML = s;
+    return { stackMm, g, free };
+  }
+
+  let ppActions = null, paid = false;
   function update() {
-    const s = state();
-    document.getElementById('s-qty').textContent = s.total;
-    document.getElementById('s-each').textContent = eur(s.each);
-    document.getElementById('s-sub').textContent = eur(s.sum);
-    document.getElementById('s-ship').textContent = !sel.value ? 'choose country' : s.ship !== null ? eur(s.ship) : 'quoted by email';
-    document.getElementById('s-total').textContent = s.ship !== null ? eur(s.grand) : eur(s.sum);
-    document.getElementById('s-note').textContent = s.zone === 0 ? 'Shipped within Switzerland, no customs.' : 'Outside Switzerland, customs may charge import VAT on delivery.';
+    for (const l of lines) l.el.querySelectorAll('.stepper').forEach(st => st.querySelector('output').textContent = l.n[st.dataset.h]);
+    const s = state(), st = drawStack(), fit = $('fit');
+    if ($('helper').hidden || !st.g) { fit.className = 'fit'; fit.textContent = lines.length > 1 ? '' : `Stack height ${st.stackMm} mm.`; }
+    else if (st.free < 5) { fit.className = 'fit warn'; fit.textContent = `Stack ${st.stackMm} mm, only ${st.free} mm free. Remove a puck.`; }
+    else if (st.free > 20) { fit.className = 'fit warn'; fit.textContent = `Stack ${st.stackMm} mm, ${st.free} mm still empty. Add a puck.`; }
+    else { fit.className = 'fit ok'; fit.textContent = `Stack ${st.stackMm} mm, about ${st.free} mm free at the top. Good fit.`; }
+    $('tip').hidden = !lines.some(l => l.n[25] > 0 && l.n[10] === 0);
+
+    $('s-q').textContent = `${s.total} ${s.total === 1 ? 'puck' : 'pucks'} × ${eur(s.each)}`;
+    $('s-sub').textContent = eur(s.sum);
+    $('s-ship').textContent = !sel.value ? 'choose country' : s.ship !== null ? eur(s.ship) : 'quoted by email';
+    $('s-tot').textContent = $('st-tot').textContent = eur(s.ship !== null ? s.grand : s.sum);
+    const sizes = lines.filter(l => l.size).map(l => l.size === 'custom' ? 'custom' : l.size + '"');
+    $('st-q').textContent = `${s.total} pucks${sizes.length ? ' · ' + sizes.join(' + ') : ''}`;
+    $('s-note').textContent = s.zone === 0 ? 'Shipped within Switzerland, no customs.' : 'Outside Switzerland, customs may charge import VAT on delivery.';
     let hint = '';
     if (s.total >= MIN && s.total < BULK_FROM) hint = `Add ${BULK_FROM - s.total} more for ${eur(BULK)} per puck.`;
     else if (s.total >= MIN && s.ship !== null && s.zone && s.room > 0) hint = `You can add ${s.room} more ${s.room === 1 ? 'puck' : 'pucks'} for the same shipping.`;
-    document.getElementById('s-warn').textContent = s.warn || hint;
-    document.getElementById('send').disabled = !s.ok;
-    document.getElementById('copy').disabled = !s.ok;
-    if (PAYPAL_ON && !paid) {
-      const payable = s.ship !== null;
-      document.getElementById('pp-box').hidden = !payable;
-      document.getElementById('pp-or').hidden = !payable;
-      if (ppActions) (s.ok && payable ? ppActions.enable() : ppActions.disable());
-    }
+    $('hint').textContent = hint; $('hint').hidden = !hint;
+    if (!paid) $('msg').textContent = s.warn;
+    $('send').disabled = $('copy').disabled = !s.ok;
+    const other = sel.value === OTHER;
+    if (PAYPAL_ON && !paid) $('pp-box').hidden = other;
+    if (other || !PAYPAL_ON) $('mail-form').hidden = false;
   }
 
-  // PayPal: items and shipping in EUR, amounts in cents so the breakdown always adds up
-  let ppActions = null, paid = false;
+  $('mail-open').onclick = () => { $('mail-form').hidden = false; $('ship-name').focus(); };
+  sel.addEventListener('change', update);
+  ['ship-name', 'ship-street', 'ship-city', 'notes'].forEach(id => $(id).addEventListener('input', update));
+  $('send').onclick = () => { const s = state(); location.href = `mailto:${MAIL}?subject=${encodeURIComponent(`Puck order (${s.total} pucks)`)}&body=${encodeURIComponent(text())}`; };
+  $('copy').onclick = async e => {
+    const btn = e.currentTarget;
+    try { await navigator.clipboard.writeText(text()); btn.textContent = 'Copied'; } catch { prompt('Copy this text:', text()); }
+    setTimeout(() => { btn.textContent = 'Copy order text'; }, 2000);
+  };
+
+  // PayPal checkout (runs when the SDK above loaded; otherwise email ordering only). Amounts in cents.
+  const PAYPAL_ON = !!(window.paypal && window.paypal.Buttons);
   const money = c => ({ currency_code: 'EUR', value: (c / 100).toFixed(2) });
   function ppOrder() {
-    const s = state(), each = Math.round(s.each * 100), ship = Math.round(s.ship * 100);
-    const items = [];
-    for (const [key, n] of Object.entries(qty)) {
-      if (!n) continue;
-      const [size, h] = key.split('|');
-      const what = size === 'custom' ? `custom ${document.getElementById('custom-id').value.trim().slice(0, 40)}` : `${size} in`;
-      items.push({ name: `Air displacement puck ${what}, ${h} mm`, quantity: String(n), unit_amount: money(each), sku: 'PM-PUCK' });
+    const s = state(), each = Math.round(s.each * 100), ship = Math.round(s.ship * 100), items = [];
+    for (const l of lines) for (const h of [25, 10]) if (l.n[h]) {
+      const what = l.size === 'custom' ? `custom ${l.custom.slice(0, 40)}` : `${l.size} in`;
+      items.push({ name: `Air displacement puck ${what}, ${h} mm`, quantity: String(l.n[h]), unit_amount: money(each), sku: 'PM-PUCK' });
     }
     const itemTotal = s.total * each;
-    const notes = document.getElementById('notes').value.trim();
     return {
       intent: 'CAPTURE',
-      purchase_units: [{
-        description: ('PEMods order' + (notes ? '. Notes: ' + notes : '')).slice(0, 127),
-        amount: { ...money(itemTotal + ship), breakdown: { item_total: money(itemTotal), shipping: money(ship) } },
-        items,
-      }],
+      purchase_units: [{ description: 'PEMods order', amount: { ...money(itemTotal + ship), breakdown: { item_total: money(itemTotal), shipping: money(ship) } }, items }],
       application_context: { brand_name: 'PEMods', shipping_preference: 'GET_FROM_FILE' },
     };
   }
-  function ppDone(html) {
-    paid = true;
-    document.getElementById('pp-box').hidden = true;
-    document.getElementById('pp-or').hidden = true;
-    const box = document.getElementById('pp-done'); box.innerHTML = html; box.hidden = false;
-  }
   if (PAYPAL_ON) {
+    $('pp-box').hidden = false;
     paypal.Buttons({
       style: { layout: 'vertical', color: 'black', shape: 'rect', label: 'pay', height: 48 },
-      onInit: (data, actions) => { ppActions = actions; update(); },
-      onClick: (data, actions) => (state().ok ? actions.resolve() : actions.reject()),
+      onInit: (data, actions) => { ppActions = actions; },
+      onClick: (data, actions) => {
+        const s = state();
+        if (s.ok && s.ship !== null) return actions.resolve();
+        $('msg').textContent = s.warn || 'Shipping to this country is quoted by email.';
+        return actions.reject();
+      },
       createOrder: (data, actions) => actions.order.create(ppOrder()),
       onShippingAddressChange: (data, actions) => {
         if (data.shippingAddress.countryCode !== ISO[sel.value]) return actions.reject(data.errors && data.errors.COUNTRY_ERROR);
       },
-      onApprove: (data, actions) => actions.order.capture().then(o => ppDone(
-        `<strong>Thank you, payment received!</strong> Your pucks will be printed and shipped soon. We'll email you the tracking number. Order reference: ${o.id}`)),
-      onError: () => { document.getElementById('s-warn').textContent = 'PayPal had a problem. Please try again, or order by email below.'; },
-    }).render("#pp-buttons");
+      onApprove: (data, actions) => actions.order.capture().then(o => {
+        paid = true;
+        $('pp-box').hidden = true; $('msg').textContent = ''; $('mail-link').hidden = true; $('mail-form').hidden = true;
+        $('pp-done').innerHTML = `<strong>Thank you, payment received!</strong> Your pucks will be made and shipped soon. We'll email you the tracking number. Order reference: ${o.id}`;
+        $('pp-done').hidden = false;
+      }),
+      onError: () => { $('msg').textContent = 'PayPal had a problem. Please try again, or send the order by email.'; },
+    }).render('#pp-buttons');
   }
 
-  document.getElementById('send').addEventListener('click', () => {
-    const s = state();
-    location.href = `mailto:${MAIL}?subject=${encodeURIComponent(`Puck order (${s.total} pucks)`)}&body=${encodeURIComponent(text())}`;
-  });
-  document.getElementById('copy').addEventListener('click', async e => {
-    const btn = e.currentTarget;
-    try { await navigator.clipboard.writeText(text()); btn.textContent = 'Copied'; }
-    catch { prompt('Copy this text:', text()); }
-    setTimeout(() => { btn.textContent = 'Copy order text'; }, 2000);
-  });
+  // gallery: swipe, thumbnails, arrows
+  const track = $('track'), thumbs = [...document.querySelectorAll('.thumb')];
+  const cur = () => Math.round(track.scrollLeft / track.clientWidth);
+  const go = i => track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' });
+  thumbs.forEach((t, i) => t.onclick = () => go(i));
+  track.addEventListener('scroll', () => { const i = cur(); thumbs.forEach((t, j) => t.classList.toggle('on', i === j)); });
+  $('prev').onclick = () => go(Math.max(0, cur() - 1));
+  $('next').onclick = () => go(Math.min(thumbs.length - 1, cur() + 1));
 
-  const main = document.getElementById('main-img');
-  document.querySelectorAll('.thumbs button').forEach(b => b.addEventListener('click', () => {
-    main.src = b.dataset.src; main.alt = b.dataset.alt;
-    document.querySelectorAll('.thumbs button').forEach(x => x.setAttribute('aria-current', x === b));
-  }));
+  // light / dark
+  $('theme').onclick = () => {
+    const d = document.documentElement, dark = d.dataset.theme !== 'dark';
+    if (dark) d.dataset.theme = 'dark'; else delete d.dataset.theme;
+    try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+  };
 
-  document.getElementById('y').textContent = new Date().getFullYear();
+  // mobile: checkout bar once the summary is scrolled past
+  new IntersectionObserver(([e]) => $('sticky').classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top < 0)).observe(document.querySelector('.sum'));
+
+  $('y').textContent = new Date().getFullYear();
   update();
 })();
 </script>
