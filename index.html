@@ -158,6 +158,7 @@
     .sticky a { background:var(--acc); color:var(--acc-text); text-decoration:none; border-radius:6px; padding:12px 20px; font-weight:600; }
   }
 </style>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="090ba090-4337-4223-8649-42bbaa117927" data-domains="pemods.com,www.pemods.com"></script>
 </head>
 <body>
 <div class="bar">Pay by PayPal or card · Tracked shipping · Made to order in Switzerland</div>
@@ -305,7 +306,7 @@
 </main>
 
 <footer><div class="wrap">
-  <span>© <span id="y"></span> PEMods · Made in Switzerland · Thanks to Karl for the original idea</span>
+  <span>© <span id="y"></span> PEMods · Made in Switzerland · Thanks to Karl for the original idea · Visitor stats without cookies</span>
   <span><a href="https://www.reddit.com/r/TheScienceOfPE/comments/1uhs09g/magnetic_displacement_pucks_now_available_fully/" target="_blank" rel="noopener">Reddit</a> · <a href="mailto:pemods@proton.me">pemods@proton.me</a></span>
 </div></footer>
 <div class="sticky" id="sticky"><div><b id="st-tot">€0.00</b><small id="st-q">0 pucks</small></div><a href="#buy">Checkout</a></div>
@@ -461,12 +462,17 @@
     if (other || !PAYPAL_ON) $('mail-form').hidden = false;
   }
 
-  $('mail-open').onclick = () => { $('mail-form').hidden = false; $('ship-name').focus(); };
+  // visitor stats (Umami, no cookies); does nothing if the script is blocked
+  const stat = (name, data) => { try { if (window.umami) umami.track(name, data); } catch (e) {} };
+  const statData = () => { const s = state(); return { country: sel.value, pucks: s.total }; };
+
+  $('mail-open').onclick = () => { $('mail-form').hidden = false; $('ship-name').focus(); stat('email-form-open', statData()); };
   sel.addEventListener('change', update);
   ['ship-name', 'ship-street', 'ship-city', 'notes'].forEach(id => $(id).addEventListener('input', update));
-  $('send').onclick = () => { const s = state(); location.href = `mailto:${MAIL}?subject=${encodeURIComponent(`Puck order (${s.total} pucks)`)}&body=${encodeURIComponent(text())}`; };
+  $('send').onclick = () => { const s = state(); stat('email-order-sent', statData()); location.href = `mailto:${MAIL}?subject=${encodeURIComponent(`Puck order (${s.total} pucks)`)}&body=${encodeURIComponent(text())}`; };
   $('copy').onclick = async e => {
     const btn = e.currentTarget;
+    stat('email-order-copied', statData());
     try { await navigator.clipboard.writeText(text()); btn.textContent = 'Copied'; } catch { prompt('Copy this text:', text()); }
     setTimeout(() => { btn.textContent = 'Copy order text'; }, 2000);
   };
@@ -494,7 +500,7 @@
       onInit: (data, actions) => { ppActions = actions; },
       onClick: (data, actions) => {
         const s = state();
-        if (s.ok && s.ship !== null) return actions.resolve();
+        if (s.ok && s.ship !== null) { stat('paypal-click', statData()); return actions.resolve(); }
         $('msg').textContent = s.warn || 'Shipping to this country is quoted by email.';
         return actions.reject();
       },
@@ -504,6 +510,8 @@
       },
       onApprove: (data, actions) => actions.order.capture().then(o => {
         paid = true;
+        const s = state();
+        stat('paypal-paid', { country: sel.value, pucks: s.total, revenue: +(s.total * s.each + s.ship).toFixed(2), currency: 'EUR' });
         $('pp-box').hidden = true; $('msg').textContent = ''; $('mail-link').hidden = true; $('mail-form').hidden = true;
         $('pp-done').innerHTML = `<strong>Thank you, payment received!</strong> Your pucks will be made and shipped soon. We'll email you the tracking number. Order reference: ${o.id}`;
         $('pp-done').hidden = false;
