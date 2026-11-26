@@ -352,7 +352,7 @@
     const line = { size: '', custom: '', n: { 25: n25, 10: n10 }, el: document.createElement('div') };
     line.el.className = 'line';
     line.el.innerHTML = `<select aria-label="Cylinder size">${sizeOptions}</select>
-      <div class="custom-id" hidden><input type="text" placeholder="Your cylinder's inner diameter, e.g. 57.2 mm"><p class="small" style="margin:6px 0 0">Your pucks will be marked with this number (e.g. 58.5). Custom pucks are made to your measurement and can't be returned.</p></div>
+      <div class="custom-id" hidden><input type="text" placeholder="Your cylinder's inner diameter, e.g. 57.2 mm"><p class="small" style="margin:6px 0 0">Your pucks will be marked with your cylinder's inner diameter (e.g. 58.5). The puck itself is made about 1 mm smaller, so it slides in smoothly. Custom pucks are made to your measurement and can't be returned.</p></div>
       <div class="counts">${stepper(25)}${stepper(10)}</div>${lines.length ? '<button class="remove" type="button">Remove this size</button>' : ''}`;
     const s = line.el.querySelector('select'), c = line.el.querySelector('.custom-id');
     s.onchange = () => { line.size = s.value; c.hidden = s.value !== 'custom'; update(); };
